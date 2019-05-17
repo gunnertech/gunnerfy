@@ -45,8 +45,9 @@ When you create the project in sentry, make sure you use the exact ``<project-na
 
 # RDS Schema Migrations and Codegen
 ````
-$ gunnerfiy generate migration -n <migration-name> -s <sql-statement>
-$ gunnerfiy migrate
+$ gunnerfy generate migration -n <migration-name> -s <sql-statement>
+$ gunnerfy migrate
+$ cd <project-root>/serverless
 $ amplify env checkout <stage>
 $ amplify api add-graphql-datasource
 ````
@@ -192,3 +193,5 @@ However, you should also remove the IAM Group and IAM Policy in the main account
 1. remove ``process.env.NVM_BIN``
 1. cleanup ``path`` params
 1. Update amplify host on web deploy so it has most recent environment variables
+1. Wrap all binaries (yarn, npm, expo, amplify) in ``gunnerfy``
+1. Allow user to select package manager (yarn or npm)
