@@ -5,11 +5,16 @@ const grab = ({stage, projectName, targetFile, templateFile}) =>
     .then(() => fs.readFile(templateFile, 'utf8'))
     .then(contents => Promise.resolve(contents.replace(/<stage>/g, stage)) )
     .then(contents => Promise.resolve(contents.replace(/<project-name>/g, projectName)) )
+    .then(contents => Promise.resolve(contents.replace(/<project-name-lower>/g, projectName.toLowerCase())) )
     .then(contents => 
       fs.existsSync(targetFile) ? (
         fs.readFile(targetFile, 'utf8')
           .then(existingContents =>
-            fs.writeFile(targetFile, existingContents.replace(/(\/\/|#)<new-environment>/g, contents), 'utf8')
+            existingContents.replace(new RegExp(projectName, 'g'), "").includes(stage) ? (
+              Promise.resolve("")
+            ) : (
+              fs.writeFile(targetFile, existingContents.replace(/(\/\/|#)<new-environment>/g, contents), 'utf8')
+            )
           )
       ) : (
         fs.writeFile(targetFile, contents, 'utf8')

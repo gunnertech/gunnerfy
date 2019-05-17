@@ -9,13 +9,13 @@ const init = ({stage, projectName, path}) =>
 		`).code))
 		.then(code => Promise.resolve(shell.exec(`
 cat >> ${path}/.git/config << EndOfMessage\n
-[credential "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName}-${stage}/"]\r
+[credential "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}/"]\r
 	UseHttpPath = true\r
-	helper = !aws --profile ${projectName}-${stage}developer codecommit credential-helper \$@\r
+	helper = !aws --profile ${projectName.toLowerCase()}-${stage}developer codecommit credential-helper \$@\r
 [remote "${stage}"]\r
-	url = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName}-${stage}\r
+	url = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}\r
 	fetch = +refs/heads/*:refs/remotes/origin/*\r
-	pushurl = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName}-${stage}\r
+	pushurl = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}\r
 [branch "${stage}"]\r
 	remote = ${stage}\r
 	merge = refs/heads/${stage}\r

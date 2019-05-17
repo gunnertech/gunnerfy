@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk'
 import fs from 'fs-extra';
+import shell from 'shelljs'
 
 import setvar from '../../setvar';
 
@@ -64,6 +65,9 @@ const setup = ({stage, projectName, path}) =>
         )
     )
     .then(({app}) => setvar({path, name: `${stage}-app-id`, value: app.appId}))
+    .then(() => Promise.resolve(shell.exec(`
+      cd ${path} && git add . && git commit -am "sets variables; sets up amplify hosting" && git push
+		`).code))
 
 
 

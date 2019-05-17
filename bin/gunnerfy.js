@@ -58,10 +58,10 @@ Promise.resolve("Building Project")
   // .then(() => getTemplate({projectName: program.projectName, path: currentDir}))
   // .then(() => setupGit({projectName: program.projectName, stage: program.stage, path: `${currentDir}/${program.projectName}`}) )
   // .then(() => addEnvironment(program) )
-  // .then(() => configureEnvironment({projectName: program.projectName, stage: program.stage,  path: `${currentDir}/${program.projectName}`}))
+  .then(() => configureEnvironment({projectName: program.projectName, stage: program.stage,  path: `${currentDir}/${program.projectName}`}))
   // .then(() => setupAmplify({projectName: program.projectName, stage: program.stage, npmPath: process.env.NVM_BIN, path: `${currentDir}/${program.projectName}`}))
   // .then(() => setupServerless({projectName: program.projectName, stage: program.stage, npmPath: process.env.NVM_BIN, path: `${currentDir}/${program.projectName}`}))
-  .then(() => setupAmplifyHosting({projectName: program.projectName, stage: program.stage, path: `${currentDir}/${program.projectName}`}))
+  // .then(() => setupAmplifyHosting({projectName: program.projectName, stage: program.stage, path: `${currentDir}/${program.projectName}`}))
   .then(args => 
     console.log(args) ||
     console.log(chalk.green('All Finished!')) ||
