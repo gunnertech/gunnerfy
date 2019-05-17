@@ -30,6 +30,7 @@ const assertRequiredArgs = cli =>
   ).map(option => option.long).join(', ')}`)
   
 
+// TODO: make this work (without project name) gunnerfy -s cody -i gunnertech.com -o "Sample Client" -a 323318334161
 
 // gunnerfy -s cody -i gunnertech.com -o "Sample Client" -a 323318334161 -p CodySample5
 
