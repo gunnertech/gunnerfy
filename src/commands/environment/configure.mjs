@@ -27,31 +27,31 @@ const configure = ({stage, projectName, path}) =>
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/scripts/templates/environment.js.txt`,
+      templateFile: `${path}/templates/environment.js.txt`,
       targetFile: `${path}/react-native-client/src/environment.js`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/scripts/templates/.env.stage.txt`,
+      templateFile: `${path}/templates/.env.stage.txt`,
       targetFile: `${path}/react-client/.env.${stage}`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/scripts/templates/secrets.yml.txt`,
+      templateFile: `${path}/templates/secrets.yml.txt`,
       targetFile: `${path}/serverless/secrets.yml`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/scripts/templates/env.yml.txt`,
+      templateFile: `${path}/templates/env.yml.txt`,
       targetFile: `${path}/serverless/env.yml`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/scripts/templates/git.txt`,
+      templateFile: `${path}/templates/git.txt`,
       targetFile: `${path}/.git/config`
     }))
     

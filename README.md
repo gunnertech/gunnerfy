@@ -54,12 +54,17 @@ $ amplify api add-graphql-datasource
 
 # Adding a Team Member
 1. Dev requests access to ``<base-stage>`` from team lead (where pull requests are submitted, i.e. staging) with their IAM ``<user-name>``
-
 1. If approved, team lead will add dev's IAM user to the IAM group with access to base-stage
 
 ````
 $ gunnerfy users add -u <user-name> -s <base-stage>
 ````
+
+2. The approve will give the team lead a command to send to the new developer for them to run like this:
+````
+$ gunnerfy add-project <project-name> -a <accountId> -b <baseStage>
+````
+
 
 
 # Workflow
