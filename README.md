@@ -8,13 +8,13 @@ A toolkit to assist in setup and operations of a serverless platform for a multi
 
 Install the following
 
-1. Brew ``$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"``
-1. Python ``$ brew install python; brew upgrade python``
+1. Brew: ``$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"``
+1. Python: ``$ brew install python; brew upgrade python``
 1. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html#install-tool-pip) or ``$ brew install awscli; brew upgrade awscli``
-1. Setup your aws cli ``aws configure``
+1. Setup your aws cli if you haven't: ``aws configure``
 1. [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 1. [NVM](https://github.com/creationix/nvm#installation-and-update)
-1. Node ``nvm install 12``
+1. Node: ``nvm install 12``
 
 ## Installation
 ````
