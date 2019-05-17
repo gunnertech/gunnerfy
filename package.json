@@ -13,8 +13,10 @@
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "exec-sh": "^0.3.2",
+    "expo-cli": "^2.18.0",
     "fs-extra": "^8.0.1",
     "glob": "^7.1.4",
+    "js-yaml": "^3.13.1",
     "replace-in-file": "^4.1.0",
     "serverless": "^1.42.3",
     "shelljs": "^0.8.3"
@@ -22,11 +24,12 @@
   "bin": {
     "gunnerfy": "./bin/gunnerfy.js",
     "amplify": "./node_modules/.bin/amplify",
-    "serverless": "./node_modules/.bin/serverless"
+    "serverless": "./node_modules/.bin/serverless",
+    "expo": "./node_modules/.bin/expo"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/gunnertech/gunnerfy.git"
+    "type": "git",
+    "url": "https://github.com/gunnertech/gunnerfy.git"
   },
   "files": [
     "bin"

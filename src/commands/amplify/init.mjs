@@ -41,5 +41,3 @@ cd ${path} && git checkout ${stage} && cd ${path}/serverless && ${npmPath}/ampli
 
 
 export default init
-
-// --help

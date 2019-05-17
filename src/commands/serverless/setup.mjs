@@ -35,5 +35,3 @@ const setup = ({stage, projectName, path, npmPath}) =>
 
 
 export default setup
-
-// --help

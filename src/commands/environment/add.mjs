@@ -199,15 +199,15 @@ const createAccount = args =>
     .then(({CreateAccountStatus}) =>
       console.log(`Creating AWS Account: ${CreateAccountStatus.State}`) ||
       sleep(5000)
-      .then(() => CreateAccountStatus.State === 'FAILED' ? Promise.reject(CreateAccountStatus) : createAccount({
-        ...args,
-        accountId: CreateAccountStatus.AccountId,
-        account: {
-          ...args.account,
-          accountStatus: CreateAccountStatus.State,
-          accountId: CreateAccountStatus.AccountId
-        }
-      }))
+        .then(() => CreateAccountStatus.State === 'FAILED' ? Promise.reject(CreateAccountStatus) : createAccount({
+          ...args,
+          accountId: CreateAccountStatus.AccountId,
+          account: {
+            ...args.account,
+            accountStatus: CreateAccountStatus.State,
+            accountId: CreateAccountStatus.AccountId
+          }
+        }))
     )
   )
 

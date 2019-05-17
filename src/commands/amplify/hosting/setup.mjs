@@ -4,6 +4,11 @@ import shell from 'shelljs'
 
 import setvar from '../../setvar';
 
+const removeProperties = ((props, obj) => {
+  let copy = {...obj};
+  props.forEach(key => {delete copy[key];} );
+  return copy
+})
 
 const setup = ({stage, projectName, path}) =>
   Promise.resolve(
@@ -55,12 +60,36 @@ const setup = ({stage, projectName, path}) =>
             })
             .promise()
             .then(() => Promise.resolve({app: apps[0]}))
+            .then(({app}) =>
+              client.createBranch({
+                ...removeProperties(["customRules", "platform", "name", "enableBranchAutoBuild"], options),
+                appId: app.appId,
+                framework: 'react',
+                enableNotification: true,
+                branchName: stage
+              })
+              .promise()
+              .then(() => ({app}))
+            )
           ) : (
-            client.createApp({
-              ...options, 
-              oauthToken: 'STRING_VALUE',
-              repository: `https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}/`, /* required */
-            }).promise()
+            client
+              .createApp({
+                ...options, 
+                oauthToken: 'STRING_VALUE',
+                repository: `https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}/`, /* required */
+              })
+              .promise()
+              .then(({app}) =>
+                client.createBranch({
+                  ...removeProperties(["customRules", "platform", "name", "enableBranchAutoBuild"], options),
+                  appId: app.appId,
+                  framework: 'react',
+                  enableNotification: true,
+                  branchName: stage
+                })
+                .promise()
+                .then(() => ({app}))
+              )
           )
         )
     )

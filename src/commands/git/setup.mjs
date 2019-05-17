@@ -27,5 +27,3 @@ EndOfMessage
 
 
 export default init
-
-// --help
