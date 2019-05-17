@@ -14,8 +14,7 @@ Install the following
 1. Setup your aws cli ``aws configure``
 1. [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 1. [NVM](https://github.com/creationix/nvm#installation-and-update)
-1. Node ``nvm install``
-1. Yarn ``brew install yarn; brew upgrade yarn;``
+1. Node ``nvm install 12``
 
 ## Installation
 ````
@@ -75,21 +74,21 @@ $ gunnerfy add-project <project-name> -a <accountId> -b <baseStage>
 
 ````
 $ cd <project-root>/serverless
-$ yarn watch
+$ npm run watch
 ````
 
 ### React Client 
 
 ````
 $ cd <project-root>/react-client
-$ yarn start
+$ npm run start
 ````
 
 ### React Native Client 
 
 ````
 $ cd <project-root>/react-native-client
-$ yarn <simulator> (ios|android)
+$ npm run <simulator> (ios|android)
 ````
 
 ## Start of iteration
