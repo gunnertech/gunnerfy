@@ -42,10 +42,10 @@ const writeCredentialsToFile = args =>
       ) : (
         Promise.resolve(
 `
-[profile ${args.accountAlias}developer] \
-role_arn = arn:aws:iam::${args.accountId}:role/${args.roleName} \
-source_profile = ${args.sourceProfile} \
-region = ${args.region} \
+[profile ${args.accountAlias}developer] \\r
+role_arn = arn:aws:iam::${args.accountId}:role/${args.roleName} \\r
+source_profile = ${args.sourceProfile} \\r
+region = ${args.region} \\r
 \
 `
         )
@@ -57,8 +57,8 @@ region = ${args.region} \
           // )
           .then(str => 
             Promise.resolve(shell.exec(`
-              echo '${str.replace('[profile ', '[')}' >> ${process.env['HOME']}/.aws/credentials &&
-              echo '${str}' >> ${process.env['HOME']}/.aws/config
+              echo "${str.replace('[profile ', '[')}" >> ${process.env['HOME']}/.aws/credentials &&
+              echo "${str}" >> ${process.env['HOME']}/.aws/config
             `))
           )
       )
