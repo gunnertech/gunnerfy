@@ -40,15 +40,15 @@ const setup = ({stage, projectName, path}) =>
       answer === 'y' ? (
         Promise.resolve(yaml.safeLoad(fs.readFileSync(`${path}/serverless/secrets.yml`, 'utf8')))
           .then(obj => new Promise((resolve, reject) => 
-            rl.question('DB username: ', answer => resolve([obj, answer]))
+            rl.question('DB username (alpha-numeric maximum 16 characters): ', answer => resolve([obj, answer]))
           ))
           .then(([obj, username]) => new Promise((resolve, reject) => 
             rl.question('DB password: ', answer => resolve([obj, username, answer]))
           ))
-          .then(([obj, username, password]) => console.log(([obj, username, password])) || Promise.resolve({
+          .then(([obj, username, password]) => console.log(`Username: ${username.replace(/[^a-z0-9]/i,"").substring(0, 16)}`) || Promise.resolve({
             ...obj,
             [stage]: {
-              DB_CLUSTER_MASTER_USERNAME: username,
+              DB_CLUSTER_MASTER_USERNAME: username.replace(/[^a-z0-9]/i,"").substring(0, 16),
               DB_CLUSTER_MASTER_PASSWORD: password
             }
           }))
