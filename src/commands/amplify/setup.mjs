@@ -10,7 +10,7 @@ import awscreds from '../awscreds'
 
 const setup = ({stage, projectName, path, npmPath}) =>
   init({stage, projectName, npmPath, path})
-    .then(() => fs.existsSync(`${path}/serverless/amplify`))
+    .then(() => fs.existsSync(`${path}/serverless/amplify/backend/api`))
     .then(hasAmplify => Promise.resolve(
       hasAmplify ? (
         ''
