@@ -32,7 +32,7 @@ const migrate = ({stage, projectName, path}) =>
               aws rds-data execute-sql --db-cluster-or-instance-arn "arn:aws:rds:us-east-1:${Account}:cluster:${projectName.toLowerCase()}-${stage}-cluster" \\
               --schema "mysql"  --aws-secret-store-arn "HttpRDSSecret"  \\
               --region us-east-1 --sql-statements "${fs.readFileSync(`${path}/serverless/migrations/${file}`, 'utf8')}" \\
-              --database ${projectName.toLowerCase()}_${stage}_db \\
+              --database ${projectName.toLowerCase().replace(/-/g,"_")}_${stage}_db \\
               --profile ${projectName.toLowerCase()}-${stage}developer
             `).code  
           )

@@ -87,7 +87,7 @@ const init = ({stage, projectName, path}) =>
                   aws rds-data execute-sql --db-cluster-or-instance-arn "arn:aws:rds:us-east-1:${Account}:cluster:${cluster.DBClusterIdentifier}" \\
                     --schema "mysql"  --aws-secret-store-arn "HttpRDSSecret"  \\
                     --region us-east-1 --sql-statements "create DATABASE ${projectName.toLowerCase()}_${stage}_db" \\
-                    --profile ${projectName.toLowerCase()}-${stage}developer
+                    --profile ${projectName.toLowerCase().replace(/-/g,"_")}-${stage}developer
                 `).code))
             )
           )
