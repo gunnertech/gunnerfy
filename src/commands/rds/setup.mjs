@@ -54,7 +54,7 @@ const init = ({stage, projectName, path}) =>
             fs.writeFile(`${path}/serverless/secrets.yml`, yaml.safeDump(obj), 'utf8')
           )
           .then(code => Promise.resolve(shell.exec(`
-            cd ${path}/serverless && ${npmPath}/serverless deploy -s ${stage}
+            cd ${path}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}
           `).code))
           .then(() => rds({projectName, stage}).describeDBClusters({DBClusterIdentifier: `${projectName.toLowerCase()}-${stage}-cluster`}).promise())
           .then(({DBClusters: clusters}) => Promise.resolve(

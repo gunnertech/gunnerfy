@@ -24,7 +24,9 @@ const createAccountAlias = args =>
         console.log("Account Alias Already Created") ||
         Promise.resolve(args)
       ) : (
-        Promise.reject(err)
+        //Promise.reject(err)
+        console.log("Let's Try this again!") ||
+        createAccountAlias(args)
       )
     )
     .then(() => Promise.resolve(args))
@@ -246,16 +248,16 @@ const add = ({
   .then(args => ({
     ...args,
     iam: new AWS.IAM({
-        credentials: new AWS.SharedIniFileCredentials({
-            profile: args.sourceProfile,
-            filename: `${process.env['HOME']}/.aws/credentials`
-        }),
-        region: args.region
+      credentials: new AWS.SharedIniFileCredentials({
+        profile: args.sourceProfile,
+        filename: `${process.env['HOME']}/.aws/credentials`
+      }),
+      region: args.region
     }),
     organizations: new AWS.Organizations({
       credentials: new AWS.SharedIniFileCredentials({
-          profile: args.sourceProfile,
-          filename: `${process.env['HOME']}/.aws/credentials`
+        profile: args.sourceProfile,
+        filename: `${process.env['HOME']}/.aws/credentials`
       }),
       region: 'us-east-1'
     })
