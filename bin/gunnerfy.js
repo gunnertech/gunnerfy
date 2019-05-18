@@ -7,6 +7,7 @@ import program from 'commander'
 import shell from 'shelljs'
 import fs from 'fs-extra';
 import AWS from 'aws-sdk';
+import { execSync } from 'child_process';
 
 import setvar from '../src/commands/setvar';
 import addEnvironment from '../src/commands/environment/add';
@@ -196,7 +197,6 @@ program
           .then(() => Promise.resolve(
             shell.exec(`
               git checkout ${args.stage} && 
-              cd serverless &&
               ${process.env.NVM_BIN}/amplify env checkout ${args.stage}
             `)   
           ))
@@ -300,9 +300,9 @@ program
   .command('develop')
   .description("Runs watch to allow development locally")
   .action(() =>
-    Promise.resolve(shell.exec(`
+    Promise.resolve(execSync(`
       ${process.env.NVM_BIN}/watch 'rm -rf ./react-client/src/aws-exports.js && cp ./amplify/src/aws-exports.js ./react-client/src/aws-exports.js &&  rm -rf ./react-client/src/graphql && cp -R  ./amplify/src/graphql ./react-client/src && rm -rf ./react-native-client/aws-exports.js && cp ./amplify/src/aws-exports.js ./react-native-client/aws-exports.js &&  rm -rf ./react-native-client/src/graphql && cp -R ./amplify/src/graphql ./react-native-client/src' ./amplify
-    `))
+    `, {stdio: ['inherit','inherit','inherit']}))
     .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||
