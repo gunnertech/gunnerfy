@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 const init = ({stage, projectName, path}) =>
 	fs.readFile(`${path}/.git/config`, 'utf8')
 		.then(contents =>
-			contents.include(`[branch "${stage}"]`) ? (
+			contents.includes(`[branch "${stage}"]`) ? (
 				Promise.resolve("")
 			) : (
 				Promise.resolve('Setting up Git')
