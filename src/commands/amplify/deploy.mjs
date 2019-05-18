@@ -12,7 +12,7 @@ CODEGEN="{\\
 \\"generateDocs\\":true\\
 }"
 
-cd ${path}/serverless && ${npmPath}/amplify push \\
+cd ${path} && ${npmPath}/amplify push \\
 --codegen $CODEGEN \\
 --yes    
   `)

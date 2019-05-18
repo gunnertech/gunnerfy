@@ -10,16 +10,16 @@ import awscreds from '../awscreds'
 
 const setup = ({stage, projectName, path, npmPath}) =>
   init({stage, projectName, npmPath, path})
-    .then(() => fs.existsSync(`${path}/serverless/amplify/backend/api`))
+    .then(() => fs.existsSync(`${path}/amplify/backend/api`))
     .then(hasAmplify => Promise.resolve(
       hasAmplify ? (
         ''
       ) : (
         Promise.resolve(execSync(` 
-          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add api || true) && \\
-          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add auth || true) && \\
-          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
-          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add storage || true)
+          (cd ${path} && ${process.env.NVM_BIN}/amplify add api || true) && \\
+          (cd ${path} && ${process.env.NVM_BIN}/amplify add auth || true) && \\
+          (cd ${path} && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
+          (cd ${path} && ${process.env.NVM_BIN}/amplify add storage || true)
         `, {stdio: ['inherit','inherit','inherit']}))
       )
     ))
