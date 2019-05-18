@@ -1,13 +1,19 @@
 
 import shell from 'shelljs'
+import fs from 'fs-extra';
 
 
 const init = ({stage, projectName, path}) =>
-  Promise.resolve('Setting up Git')
-		.then(() => Promise.resolve(shell.exec(`
-			cd ${path} && git init
-		`).code))
-		.then(code => Promise.resolve(shell.exec(`
+	fs.readFile(`${path}/.git/config`, 'utf8')
+		.then(contents =>
+			contents.include(`[branch "${stage}"]`) ? (
+				Promise.resolve("")
+			) : (
+				Promise.resolve('Setting up Git')
+					.then(() => Promise.resolve(shell.exec(`
+						cd ${path} && git init
+					`).code))
+					.then(code => Promise.resolve(shell.exec(`
 cat >> ${path}/.git/config << EndOfMessage\n
 [credential "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}/"]\r
 	UseHttpPath = true\r
@@ -20,10 +26,12 @@ cat >> ${path}/.git/config << EndOfMessage\n
 	remote = ${stage}\r
 	merge = refs/heads/${stage}\r
 EndOfMessage
-		`).code))
-		.then(code => Promise.resolve(shell.exec(`
-			cd ${path} && git checkout -b ${stage} && git add . && git commit -am "initial commit"
-		`).code))
+					`).code))
+					.then(code => Promise.resolve(shell.exec(`
+						cd ${path} && git checkout -b ${stage} && git add . && git commit -am "initial commit"
+					`).code))
+			)
+		)
 
 
 export default init

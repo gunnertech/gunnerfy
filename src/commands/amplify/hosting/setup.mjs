@@ -69,7 +69,8 @@ const setup = ({stage, projectName, path}) =>
                 branchName: stage
               })
               .promise()
-              .then(() => ({app}))
+              .then(() => Promise.reolve({app}))
+              .catch(err => Promise.reolve({app}))
             )
           ) : (
             client
@@ -89,6 +90,7 @@ const setup = ({stage, projectName, path}) =>
                 })
                 .promise()
                 .then(() => ({app}))
+                .catch(err => Promise.reolve({app}))
               )
           )
         )
