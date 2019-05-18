@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-// import IAM from 'aws-sdk/clients/iam';
+import shell from 'shelljs'
 
 import AWS from 'aws-sdk'
 
@@ -7,28 +7,31 @@ import AWS from 'aws-sdk'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const createAccountAlias = args =>
-  Promise.resolve(
-    new AWS.IAM({
-      credentials: new AWS.SharedIniFileCredentials({
-          profile: args.profile,
-          filename: `${process.env['HOME']}/.aws/credentials`
-      }),
-      region: args.region
-    })
-  )
-    .then(iamNew => 
-      iamNew.createAccountAlias({AccountAlias: args.accountAlias}).promise()
-    )
-    .catch(err => 
-      err.code === 'EntityAlreadyExists' ? (
-        console.log("Account Alias Already Created") ||
-        Promise.resolve(args)
-      ) : (
-        //Promise.reject(err)
-        console.log("Let's Try this again!") ||
-        createAccountAlias(args)
-      )
-    )
+  // Promise.resolve(
+  //   new AWS.IAM({
+  //     credentials: new AWS.SharedIniFileCredentials({
+  //         profile: args.profile,
+  //         filename: `${process.env['HOME']}/.aws/credentials`
+  //     }),
+  //     region: args.region
+  //   })
+  // )
+  //   .then(iamNew => 
+  //     iamNew.createAccountAlias({AccountAlias: args.accountAlias}).promise()
+  //   )
+  //   .catch(err => 
+  //     err.code === 'EntityAlreadyExists' ? (
+  //       console.log("Account Alias Already Created") ||
+  //       Promise.resolve(args)
+  //     ) : (
+  //       //Promise.reject(err)
+  //       console.log("Let's Try this again!") ||
+  //       createAccountAlias(args)
+  //     )
+  //   )
+  Promise.resolve(shell.exec(
+    `aws iam create-account-alias --account-alias ${args.accountAlias} --profile ${args.profile}`
+  ))
     .then(() => Promise.resolve(args))
 
 const writeCredentialsToFile = args =>
