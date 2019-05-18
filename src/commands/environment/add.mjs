@@ -187,6 +187,7 @@ const createAccount = args =>
     })
     .promise()
     .then(({CreateAccountStatus}) => 
+      console.log(CreateAccountStatus) ||
       createAccount({
         ...args,
         account: {
@@ -277,5 +278,6 @@ const add = ({
   .then(addUserToGroup)
   .then(writeCredentialsToFile)
   .then(createAccountAlias)
+  .then(() => sleep(5000))
 
 export default add;
