@@ -58,18 +58,25 @@ const setup = ({stage, projectName, path}) =>
           .then(code => Promise.resolve(shell.exec(`
             cd ${path}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}
           `).code))
-          .then(() => rds({projectName, stage}).describeDBClusters({DBClusterIdentifier: `${projectName.toLowerCase()}-${stage}-cluster`}).promise())
+          .then(() => 
+            rds({projectName, stage})
+              .then(rds => 
+                rds.describeDBClusters({DBClusterIdentifier: `${projectName.toLowerCase()}-${stage}-cluster`}).promise()
+              )
+          )
           .then(({DBClusters: clusters}) => Promise.resolve(
             clusters.find(cluster => cluster.DBClusterIdentifier === `${projectName.toLowerCase()}-${stage}-cluster`)
           ))
           .then(cluster =>
             rds({projectName, stage})
-              .modifyDBCluster({
-                DBClusterIdentifier: cluster.DBClusterIdentifier,
-                ApplyImmediately: true,
-                EnableHttpEndpoint: true
-              })
-              .promise()
+              .then(rds => 
+                rds.modifyDBCluster({
+                  DBClusterIdentifier: cluster.DBClusterIdentifier,
+                  ApplyImmediately: true,
+                  EnableHttpEndpoint: true
+                })
+                .promise()
+              )
               .then(() => Promise.resolve(cluster))
           )
           .then(cluster => 
