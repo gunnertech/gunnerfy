@@ -8,19 +8,19 @@ import setvar from '../setvar';
 
 
 const setup = ({stage, projectName, path, npmPath}) =>
-  Promise.resolve(fs.existsSync(`${path}/serverless/amplify`))
+  init({stage, projectName, npmPath, path})
+    .then(() => fs.existsSync(`${path}/serverless/amplify`))
     .then(hasAmplify => Promise.resolve(
       hasAmplify ? (
         ''
       ) : (
-        init({stage, projectName, npmPath, path})
-          .then(() => Promise.resolve(execSync(` 
-            (cd ${path}/serverless && amplify add api || true) && \\
-            (cd ${path}/serverless && amplify add auth || true) && \\
-            (cd ${path}/serverless && amplify add analytics || true) && \\
-            (cd ${path}/serverless && amplify add storage || true)
-          `, {stdio: ['inherit','inherit','inherit']})))
-          )
+        Promise.resolve(execSync(` 
+          (cd ${path}/serverless && amplify add api || true) && \\
+          (cd ${path}/serverless && amplify add auth || true) && \\
+          (cd ${path}/serverless && amplify add analytics || true) && \\
+          (cd ${path}/serverless && amplify add storage || true)
+        `, {stdio: ['inherit','inherit','inherit']}))
+      )
     ))
     .then(() => deploy({npmPath, path}))
     .then(() => 

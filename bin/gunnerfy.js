@@ -296,7 +296,7 @@ program
       )
   )
   
-// gunnerfy new CodySample5 -i gunnertech.com -o "Sample Client"
+// gunnerfy new toybox -i gunnertech.com -o JaredKelly
 // -a 323318334161
 // -s cody 
 program

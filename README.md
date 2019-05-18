@@ -26,9 +26,30 @@ npm install git+ssh://git@github.com/gunnertech/gunnerfy.git -g
 $ gunnerfy new <project-name> -i <identifier> -o <organization-name>
 ````
 
-### Example
+### Examples
+
+#### Fine Grained Access Control
+
+Allow gunnerfy to create a new group for each environment.
+
+This gives developers fine-grained access to the different environments, i.e., developers can only access their environment and not the staging, production environments.
+
 ````
-$ gunnerfy new sample-project -i gunnertech.com -o "Sample Client"
+$ gunnerfy new sample-project -i gunnertech.com -o SampleClient
+$ gunnerfy new sample-project -i gunnertech.com -o SampleClient -s staging
+$ gunnerfy new sample-project -i gunnertech.com -o SampleClient -s production
+````
+
+#### Lax Access Control
+
+If you only want one group created for all the environments in the project, pass a group name to the command.
+
+This will create fewer groups, but each environment will be in one group, meaning a developer in the group will have access to all of the environments.
+
+````
+$ gunnerfy new sampleProject -i gunnertech.com -o SampleClient -g sampleProjectGroup
+$ gunnerfy new sampleProject -i gunnertech.com -o SampleClient -s staging  -g sampleProjectGroup
+$ gunnerfy new sampleProject -i gunnertech.com -o SampleClient -s production  -g sampleProjectGroup
 ````
 
 ## Sentry

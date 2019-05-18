@@ -42,18 +42,24 @@ const writeCredentialsToFile = args =>
       ) : (
         Promise.resolve(
 `
-[profile ${args.accountAlias}developer]
-role_arn = arn:aws:iam::${args.accountId}:role/${args.roleName}
-source_profile = ${args.sourceProfile}
-region = ${args.region}
-
+[profile ${args.accountAlias}developer] \\
+role_arn = arn:aws:iam::${args.accountId}:role/${args.roleName} \\
+source_profile = ${args.sourceProfile} \\
+region = ${args.region} \\
+\\
 `
         )
+          // .then(str => 
+          //   Promise.all([
+          //     fs.appendFile(`${process.env['HOME']}/.aws/credentials`, str.replace(`[profile `, `[`)),
+          //     fs.appendFile(`${process.env['HOME']}/.aws/config`, str)
+          //   ])
+          // )
           .then(str => 
-            Promise.all([
-              fs.appendFile(`${process.env['HOME']}/.aws/credentials`, str.replace(`[profile `, `[`)),
-              fs.appendFile(`${process.env['HOME']}/.aws/config`, str)
-            ])
+            Promise.resolve(shell.exec(`
+              echo '${str.replace('[profile ', '[')}' >> ${process.env['HOME']}/.aws/credentials &&
+              echo '${str}' >> ${process.env['HOME']}/.aws/config
+            `))
           )
       )
     )
@@ -244,7 +250,7 @@ const add = ({
   .then(args => ({
     ...args,
     accountName: args.accountName || `${args.projectName}-${args.stage}`,
-    accountAlias: (args.accountName || `${args.projectName}-${args.stage}`).toLowerCase(),
+    accountAlias: (args.accountName || `${args.projectName}-${args.stage}`).toLowerCase().replace(/ /g, ""),
     groupName: (args.groupName || `${args.accountName || `${args.projectName}-${args.stage}`}Admins`),
     email: (args.email || `${args.accountName || `${args.projectName}-${args.stage}`}@${args.identifier}`),
     roleName: `${(args.accountName || `${args.projectName}-${args.stage}`).replace(/ /,'')}OrganizationAccountAccessRole`
