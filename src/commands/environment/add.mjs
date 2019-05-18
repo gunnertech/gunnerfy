@@ -42,10 +42,10 @@ const writeCredentialsToFile = args =>
       ) : (
         Promise.resolve(
 `
-[profile ${args.accountAlias}developer] \\r
-role_arn = arn:aws:iam::${args.accountId}:role/${args.roleName} \\r
-source_profile = ${args.sourceProfile} \\r
-region = ${args.region} \\r
+[profile ${args.accountAlias}developer]\\r
+role_arn = arn:aws:iam::${args.accountId}:role/${args.roleName}\\r
+source_profile = ${args.sourceProfile}\\r
+region = ${args.region}\\r
 \
 `
         )
