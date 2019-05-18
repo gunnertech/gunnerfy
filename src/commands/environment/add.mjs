@@ -203,7 +203,7 @@ const createAccount = args =>
     })
     .promise()
     .then(({CreateAccountStatus}) =>
-      console.log(`Creating AWS Account: ${CreateAccountStatus.State}`) ||
+      console.log(`Creating AWS Account`, CreateAccountStatus) ||
       sleep(5000)
         .then(() => CreateAccountStatus.State === 'FAILED' ? Promise.reject(CreateAccountStatus) : createAccount({
           ...args,
@@ -278,6 +278,6 @@ const add = ({
   .then(addUserToGroup)
   .then(writeCredentialsToFile)
   .then(createAccountAlias)
-  .then(() => sleep(5000))
+  .then(() => console.log("Sleep for 30 seconds....") || sleep(30000))
 
 export default add;
