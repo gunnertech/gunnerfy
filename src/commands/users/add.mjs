@@ -2,6 +2,8 @@ import AWS from 'aws-sdk'
 import chalk from 'chalk';
 import readline from 'readline'
 
+import awscreds from '../awscreds'
+
 const rl2 = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -11,13 +13,13 @@ const rl2 = readline.createInterface({
 
 
 const sts = ({projectName, stage}) =>
-  new AWS.STS({
-    credentials: new AWS.SharedIniFileCredentials({
-      profile: `${projectName.toLowerCase()}-${stage}developer`,
-      filename: `${process.env['HOME']}/.aws/credentials`
-    }),
-    region: 'us-east-1'
-  })
+  awscreds({projectName, stage})
+    .then(credentials => Promise.resolve(
+      new AWS.STS({
+        credentials,
+        region: 'us-east-1'
+      })
+    ))
 
 const iam = ({profile}) =>
   new AWS.IAM({
@@ -60,8 +62,8 @@ const add = ({projectName, stage, userName, profile='default'}) =>
     )
     .then(() =>
       sts({projectName, stage})
-        .getCallerIdentity()
-        .promise()
+        .then(sts => sts.getCallerIdentity().promise())
+        
     )
     .then(({Account}) => Promise.resolve(
       console.log(chalk.green(`${userName} has been added. To start developing, they can run: gunnerfy add-project ${projectName} -a ${Account} -b ${stage}`))

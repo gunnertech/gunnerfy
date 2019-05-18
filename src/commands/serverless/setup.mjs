@@ -3,6 +3,7 @@ import shell from 'shelljs'
 import AWS from 'aws-sdk'
 
 import setvar from '../setvar';
+import awscreds from '../awscreds'
 
 
 const setup = ({stage, projectName, path, npmPath}) =>
@@ -17,15 +18,15 @@ const setup = ({stage, projectName, path, npmPath}) =>
       cd ${path}/serverless && ${npmPath}/serverless deploy -s ${stage}
     `).code))
     .then(() => 
-      new AWS.CloudFront({
-        credentials: new AWS.SharedIniFileCredentials({
-          profile: `${projectName.toLowerCase()}-${stage}developer`,
-          filename: `${process.env['HOME']}/.aws/credentials`
-        }),
-        region: 'us-east-1'
-      })
-        .listDistributions()
-        .promise()
+      awscreds({stage, projectName})
+        .then(credentials =>
+          new AWS.CloudFront({
+            credentials,
+            region: 'us-east-1'
+          })
+          .listDistributions()
+          .promise()
+        )
         .then(({DistributionList: {Items}}) => Promise.resolve(Items[0].DomainName))
         .then(domainName => setvar({path, name: `${stage}-cloudfront-domain`, value: domainName}))
     )
