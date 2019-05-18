@@ -302,7 +302,7 @@ program
   .action(() =>
     Promise.resolve(shell.exec(`
       ${process.env.NVM_BIN}/watch 'rm -rf ./react-client/src/aws-exports.js && cp ./amplify/src/aws-exports.js ./react-client/src/aws-exports.js &&  rm -rf ./react-client/src/graphql && cp -R  ./amplify/src/graphql ./react-client/src && rm -rf ./react-native-client/aws-exports.js && cp ./amplify/aws-exports.js ./react-native-client/aws-exports.js &&  rm -rf ./react-native-client/src/graphql && cp -R ./amplify/src/graphql ./react-native-client/src' ./amplify
-    `)
+    `))
     .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||
