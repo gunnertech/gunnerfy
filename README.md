@@ -170,15 +170,21 @@ $ gunnerfy deploy web
 ````
 
 
-# Recommended Material
+# Recommended Training Material
 1. [Amplify GraphQL](https://aws-amplify.github.io/docs/cli/graphql)
-2. [Amplify Workflow](https://aws-amplify.github.io/docs/cli/multienv?sdk=js)
-3. [Amplify VSCode Extension](https://github.com/aws-amplify/amplify-js/wiki/VS-Code-Snippet-Extension#full-code-block-snippet-documentation)
-4. [Amplify with AppSync](https://aws-amplify.github.io/docs/js/api#aws-appsync-sdk)
+1. [Amplify Workflow](https://aws-amplify.github.io/docs/cli/multienv?sdk=js)
+1. [Amplify VSCode Extension](https://github.com/aws-amplify/amplify-js/wiki/VS-Code-Snippet-Extension#full-code-block-snippet-documentation)
+1. [Amplify with AppSync](https://aws-amplify.github.io/docs/js/api#aws-appsync-sdk)
 5. [Serverless Framework Docs](https://serverless.com/framework/docs/providers/aws/guide/quick-start/)
-6. [AWS CloudFormation Docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html)
-7. [Gunner Technology Walkthrough](https://www.youtube.com/playlist?list=PLQBYTfA46mzjBNcJiCAny3-EWRs0c1wl_)
-8. [AppSync with Aurora](https://docs.aws.amazon.com/appsync/latest/devguide/tutorial-rds-resolvers.html#create-database-and-table)
+1. [AWS CloudFormation Docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html)
+1. [AppSync with Aurora](https://docs.aws.amazon.com/appsync/latest/devguide/tutorial-rds-resolvers.html#create-database-and-table)
+1. [Expo Docs](https://docs.expo.io/versions/latest/)
+1. [React Native Docs](https://facebook.github.io/react-native/docs/getting-started.html)
+1. [React Docs](https://reactjs.org/docs/getting-started.html)
+1. [Apollo Docs](https://www.apollographql.com/docs/react/)
+1. [Ramda Docs](https://ramdajs.com/docs/)
+1. [RxJS Docs](https://rxjs-dev.firebaseapp.com/guide/overview)
+1. [AppSync Docs](https://docs.aws.amazon.com/appsync/latest/devguide/welcome.html)
 
 # Gotchas
 
