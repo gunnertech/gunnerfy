@@ -16,10 +16,10 @@ const setup = ({stage, projectName, path, npmPath}) =>
         ''
       ) : (
         Promise.resolve(execSync(` 
-          (cd ${path}/serverless && amplify add api || true) && \\
-          (cd ${path}/serverless && amplify add auth || true) && \\
-          (cd ${path}/serverless && amplify add analytics || true) && \\
-          (cd ${path}/serverless && amplify add storage || true)
+          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add api || true) && \\
+          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add auth || true) && \\
+          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
+          (cd ${path}/serverless && ${process.env.NVM_BIN}/amplify add storage || true)
         `, {stdio: ['inherit','inherit','inherit']}))
       )
     ))
