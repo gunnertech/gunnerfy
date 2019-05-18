@@ -65,9 +65,9 @@ When you create the project in sentry, make sure you use the exact ``<project-na
 
 # RDS Schema Migrations and Codegen
 ````
+$ cd <project-name>
 $ gunnerfy generate migration -n <migration-name> -s <sql-statement>
 $ gunnerfy migrate
-$ cd <project-root>/serverless
 $ amplify env checkout <stage>
 $ amplify api add-graphql-datasource
 ````
@@ -94,21 +94,20 @@ $ gunnerfy add-project <project-name> -a <accountId> -b <baseStage>
 ### Backend 
 
 ````
-$ cd <project-root>/serverless
-$ npm run watch
+$ gunnerfy develop
 ````
 
 ### React Client 
 
 ````
-$ cd <project-root>/react-client
+$ cd react-client
 $ npm run start
 ````
 
 ### React Native Client 
 
 ````
-$ cd <project-root>/react-native-client
+$ cd react-native-client
 $ npm run <simulator> (ios|android)
 ````
 
