@@ -16,7 +16,7 @@ const projectHome = (projectName = '') =>
 const workspaceHome = projectName => 
   path.resolve(projectHome(projectName), "..")
 
-const projectName = pn =>
+const projectName = pn => console.log(pn) ||
   !!pn ? (
     pn
   ) : (
