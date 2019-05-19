@@ -16,12 +16,12 @@ const projectHome = (projectName = '') =>
 const workspaceHome = projectName => 
   path.resolve(projectHome(projectName), "..")
 
-const projectName = projectName =>
-  !!projectName ? (
-    projectName
+const projectName = pn =>
+  !!pn ? (
+    pn
   ) : (
     JSON.parse(
-      fs.readFileSync(`${projectHome(projectName)}/gunnerfy.json`, 'utf8')
+      fs.readFileSync(`${projectHome(pn)}/gunnerfy.json`, 'utf8')
     )
     .projectName
   )
