@@ -33,10 +33,14 @@ const sts = ({projectName, stage}) =>
     ))
 
 
-const setup = ({stage, projectName}) =>
+const setup = ({stage, projectName, force}) =>
   Promise.resolve('Setting up RDS')
     .then(obj => new Promise((resolve, reject) => 
-      rl.question('Would you like to setup an RDS Cluster (y/N): ', answer => resolve(answer))
+      !!force ? (
+        'y'
+      ) : (
+        rl.question('Would you like to setup an RDS Cluster (y/N): ', answer => resolve(answer))
+      )
     ))
     .then(answer =>
       answer === 'y' ? (

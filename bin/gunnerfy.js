@@ -33,6 +33,12 @@ import {
   tag as gitTag
 } from '../src/commands/git'
 
+import { 
+  projectHome, 
+  projectName, 
+  workspaceHome 
+} from '../src/commands/util'
+
 const currentDir = path.resolve(path.dirname(''))
 
 const sts = ({profile='default', region='us-east-1'}) =>
@@ -325,7 +331,7 @@ program
         stage: args.stage || defaultStage
       }))
       .then(args =>
-        setupRds({projectName: projectName, stage: args.stage})
+        setupRds({projectName: projectName(projectName), stage: args.stage, force: true})
       )
       .then(args => 
         console.log(args) ||
