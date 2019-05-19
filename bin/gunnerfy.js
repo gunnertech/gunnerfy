@@ -320,7 +320,7 @@ program
   )
 
 program 
-  .command('rds-setup <projectName>')
+  .command('rds-setup [projectName]')
   .option('-s, --stage [stage]', 'Name of stage to create. If omitted, will user default stage')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
