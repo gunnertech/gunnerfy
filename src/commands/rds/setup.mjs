@@ -37,7 +37,7 @@ const setup = ({stage, projectName, force}) =>
   Promise.resolve('Setting up RDS')
     .then(obj => new Promise((resolve, reject) => 
       !!force ? (
-        'y'
+        resolve('y')
       ) : (
         rl.question('Would you like to setup an RDS Cluster (y/N): ', answer => resolve(answer))
       )
