@@ -51,7 +51,6 @@ const defaultStage = ({profile='default', region='us-east-1'}) =>
     .then(({Arn}) => Promise.resolve(
       Arn.replace(/arn:aws:iam::\d+:user\//,"")
     ))
-  
 
 program
   .version('0.0.1')
@@ -313,7 +312,33 @@ program
         process.exit(1)
       )
   )
-  
+
+program 
+  .command('rds setup')
+  .option('-s, --stage [stage]', 'Name of stage to create. If omitted, will user default stage')
+  .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
+  .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
+  .action((projectName, args) => 
+    defaultStage({profile: args.sourceProfile, region: args.region})
+      .then(defaultStage => Promise.resolve({
+        ...args,
+        stage: args.stage || defaultStage
+      }))
+      .then(args =>
+        setupRds({projectName: projectName, stage: args.stage})
+      )
+      .then(args => 
+        console.log(args) ||
+        console.log(chalk.green('All Finished!')) ||
+        process.exit(0)
+      )
+      .catch(err => 
+        console.log(err, err.stack) ||
+        process.exit(1)
+      )
+  )
+    
+
 // gunnerfy new toybox -i gunnertech.com -o JaredKelly
 // -a 323318334161
 // -s cody 
@@ -350,7 +375,7 @@ program
         .then(code => Promise.resolve(shell.exec(`
           cd ${currentDir}/${projectName}/react-client && npm install
         `).code))
-        .then(() => setupRds({projectName: projectName, stage: args.stage, path: `${currentDir}/${projectName}`}))
+        .then(() => setupRds({projectName: projectName, stage: args.stage}))
         .then(() => fs.readFile(`${currentDir}/${projectName}/gunnerfy.json`, 'utf8'))
         .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
         .then(json => 

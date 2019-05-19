@@ -6,6 +6,8 @@ import AWS from 'aws-sdk'
 
 import awscreds from '../awscreds'
 
+import { projectHome } from '../util'
+
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -31,14 +33,14 @@ const sts = ({projectName, stage}) =>
     ))
 
 
-const setup = ({stage, projectName, path}) =>
+const setup = ({stage, projectName}) =>
   Promise.resolve('Setting up RDS')
     .then(obj => new Promise((resolve, reject) => 
       rl.question('Would you like to setup an RDS Cluster (y/N): ', answer => resolve(answer))
     ))
     .then(answer =>
       answer === 'y' ? (
-        Promise.resolve(yaml.safeLoad(fs.readFileSync(`${path}/serverless/secrets.yml`, 'utf8')))
+        Promise.resolve(yaml.safeLoad(fs.readFileSync(`${projectHome(projectName)}/serverless/secrets.yml`, 'utf8')))
           .then(obj => new Promise((resolve, reject) => 
             rl.question('DB username (alpha-numeric maximum 16 characters): ', answer => resolve([obj, answer]))
           ))
@@ -48,15 +50,15 @@ const setup = ({stage, projectName, path}) =>
           .then(([obj, username, password]) => console.log(`Username: ${username.replace(/[^a-z0-9]/i,"").substring(0, 16)}`) || Promise.resolve({
             ...obj,
             [stage]: {
-              DB_CLUSTER_MASTER_USERNAME: username.replace(/[^a-z0-9]/i,"").substring(0, 16),
-              DB_CLUSTER_MASTER_PASSWORD: password
+              DB_CLUSTER_MASTER_USERNAME: username.replace(/[^a-z0-9]/i,"").substring(0, 16).trim(),
+              DB_CLUSTER_MASTER_PASSWORD: password.trim()
             }
           }))
           .then(obj => 
-            fs.writeFile(`${path}/serverless/secrets.yml`, yaml.safeDump(obj), 'utf8')
+            fs.writeFile(`${projectHome(projectName)}/serverless/secrets.yml`, yaml.safeDump(obj), 'utf8')
           )
           .then(code => Promise.resolve(shell.exec(`
-            cd ${path}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}
+            cd ${projectHome(projectName)}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}
           `).code))
           .then(() => 
             rds({projectName, stage})
