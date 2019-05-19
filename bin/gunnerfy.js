@@ -35,7 +35,7 @@ import {
 
 import { 
   projectHome, 
-  projectName, 
+  projectName as getProjectName, 
   workspaceHome 
 } from '../src/commands/util'
 
@@ -331,7 +331,7 @@ program
         stage: args.stage || defaultStage
       }))
       .then(args =>
-        setupRds({projectName: projectName(projectName), stage: args.stage, force: true})
+        setupRds({projectName: getProjectName(projectName), stage: args.stage, force: true})
       )
       .then(args => 
         console.log(args) ||
