@@ -30,7 +30,7 @@ PROVIDERS="{\\
 \\"awscloudformation\\":$AWSCLOUDFORMATIONCONFIG\\
 }"
 
-cd ${path} && git checkout ${stage} ${npmPath}/amplify init \\
+cd ${path} && git checkout ${stage} && ${npmPath}/amplify init \\
 --amplify $AMPLIFY \\
 --frontend $FRONTEND \\
 --providers $PROVIDERS \\
