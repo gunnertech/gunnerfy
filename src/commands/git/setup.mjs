@@ -2,19 +2,21 @@
 import shell from 'shelljs'
 import fs from 'fs-extra';
 
+import { projectHome } from '../util'
 
-const init = ({stage, projectName, path}) =>
-	fs.readFile(`${path}/.git/config`, 'utf8')
+
+const init = ({stage, projectName}) =>
+	fs.readFile(`${projectHome(projectName)}/.git/config`, 'utf8')
 		.then(contents =>
 			contents.includes(`[branch "${stage}"]`) ? (
 				Promise.resolve("")
 			) : (
 				Promise.resolve('Setting up Git')
 					.then(() => Promise.resolve(shell.exec(`
-						cd ${path} && git init
+						cd ${projectHome(projectName)} && git init
 					`).code))
 					.then(code => Promise.resolve(shell.exec(`
-cat >> ${path}/.git/config << EndOfMessage\n
+cat >> ${projectHome(projectName)}/.git/config << EndOfMessage\n
 [credential "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}/"]\r
 	UseHttpPath = true\r
 	helper = !aws --profile ${projectName.toLowerCase()}-${stage}developer codecommit credential-helper \$@\r
@@ -28,7 +30,7 @@ cat >> ${path}/.git/config << EndOfMessage\n
 EndOfMessage
 					`).code))
 					.then(code => Promise.resolve(shell.exec(`
-						cd ${path} && git checkout -b ${stage} && git add . && git commit -am "initial commit"
+						cd ${projectHome(projectName)} && git checkout -b ${stage} && git add . && git commit -am "initial commit"
 					`).code))
 			)
 		)

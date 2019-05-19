@@ -114,7 +114,10 @@ program
       .then(args =>
         Promise.resolve("Adding project")
           .then(() => addProject({...args, projectName}))
-          .then(() => setupGit({projectName: projectName, stage: args.stage, path: `${currentDir}/${projectName}`}) )
+          .then(() => Promise.resolve(shell.exec(`
+            cd ${workspaceHome(projectName)} && git clone --single-branch -b ${args.baseStage} https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${args.baseStage}/ ${projectName}
+          `)))
+          .then(() => setupGit({projectName: projectName, stage: args.stage}) )
           .then(() => fs.readFile(`${currentDir}/${projectName}/gunnerfy.json`, 'utf8'))
           .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
           .then(json => addEnvironment({...args, projectName, ...json}) )
@@ -368,25 +371,25 @@ program
       }))
       .then(args =>
         Promise.resolve(`Building Project ${projectName}`)
-        .then(() => getTemplate({projectName: projectName, path: currentDir}))
-        .then(() => setupGit({projectName: projectName, stage: args.stage, path: `${currentDir}/${projectName}`}) )
+        .then(() => getTemplate({projectName: projectName}))
+        .then(() => setupGit({projectName: projectName, stage: args.stage}) )
         .then(() => addEnvironment({...args, projectName}) )
-        .then(() => configureEnvironment({projectName: projectName, stage: args.stage,  path: `${currentDir}/${projectName}`}))
-        .then(() => setupAmplify({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: `${currentDir}/${projectName}`}))
-        .then(() => setupServerless({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: `${currentDir}/${projectName}`}))
-        .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage, path: `${currentDir}/${projectName}`}))
+        .then(() => configureEnvironment({projectName: projectName, stage: args.stage,  path: `${projectHome(projectName)}`}))
+        .then(() => setupAmplify({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: projectHome(projectName)}))
+        .then(() => setupServerless({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: projectHome(projectName)}))
+        .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage, path: projectHome(projectName)}))
         .then(code => Promise.resolve(shell.exec(`
-          cd ${currentDir}/${projectName}/react-native-client && npm install
+          cd ${projectHome(projectName)}/react-native-client && npm install
         `).code))
         .then(code => Promise.resolve(shell.exec(`
-          cd ${currentDir}/${projectName}/react-client && npm install
+          cd ${projectHome(projectName)}/react-client && npm install
         `).code))
         .then(() => setupRds({projectName: projectName, stage: args.stage}))
-        .then(() => fs.readFile(`${currentDir}/${projectName}/gunnerfy.json`, 'utf8'))
+        .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
         .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
         .then(json => 
           fs.writeFile(
-            `${currentDir}/${projectName}/gunnerfy.json`, 
+            `${projectHome(projectName)}/gunnerfy.json`, 
             JSON.stringify({
               ...json,
               projectName,
@@ -413,12 +416,12 @@ program
 
 
 program
-  .command('set-var')
+  .command('set-var [projectName]')
   .description("Adds an existing project for a user")
   .option('-n, --name <name>', 'The name of the variable')
   .option('-v, --value <value>', 'The value')
   .action(args =>
-    setvar({path: ".", name: args.name, value: args.value})
+    setvar({path: projectHome(projectName), name: args.name, value: args.value})
       .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||
