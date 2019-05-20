@@ -1,11 +1,18 @@
 import fs from 'fs-extra';
 import shell from 'shelljs'
+import readline from 'readline'
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
 
 import AWS from 'aws-sdk'
 
 import { 
   getAllAccounts 
-} from '../src/commands/util'
+} from '../util'
 
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -188,60 +195,67 @@ const getRootAccountId = args =>
     }))
 
 const createAccount = args =>
-  console.log("createAccount...") ||
-  !args.account ? (
-    args.organizations.createAccount({
-      AccountName: args.accountName,
-      Email: args.email,
-      RoleName: args.roleName
-    })
-    .promise()
-    .then(({CreateAccountStatus}) => 
-      console.log(CreateAccountStatus) ||
-      createAccount({
-        ...args,
-        account: {
-          creationStatusId: CreateAccountStatus.Id
-        }
-      })
-    )
-  ) : args.account.accountStatus === 'SUCCEEDED' ? (
+  !!args.email || !!args.accountId ? (
     Promise.resolve(args)
-  ) : (
-    args.organizations.describeCreateAccountStatus({
-      CreateAccountRequestId: args.account.creationStatusId
-    })
-    .promise()
-    .then(({CreateAccountStatus}) =>
-      console.log(`Creating AWS Account`, CreateAccountStatus) ||
-      sleep(5000)
-        .then(() => CreateAccountStatus.State === 'FAILED' ? Promise.reject(CreateAccountStatus) : createAccount({
+  ) : (new Promise(resolve => 
+    rl.question('Enter a unique email address to be used for this AWS account: ', answer => resolve({
+      ...args,
+      email: answer
+    }))
+  ))
+  .then(args =>
+    !args.account ? (
+      args.organizations.createAccount({
+        AccountName: args.accountName,
+        Email: args.email,
+        RoleName: args.roleName
+      })
+      .promise()
+      .then(({CreateAccountStatus}) => 
+        console.log(CreateAccountStatus) ||
+        createAccount({
           ...args,
-          accountId: CreateAccountStatus.AccountId,
           account: {
-            ...args.account,
-            accountStatus: CreateAccountStatus.State,
-            accountId: CreateAccountStatus.AccountId
+            creationStatusId: CreateAccountStatus.Id
           }
-        }))
+        })
+      )
+    ) : args.account.accountStatus === 'SUCCEEDED' ? (
+      Promise.resolve(args)
+    ) : (
+      args.organizations.describeCreateAccountStatus({
+        CreateAccountRequestId: args.account.creationStatusId
+      })
+      .promise()
+      .then(({CreateAccountStatus}) =>
+        console.log(`Creating AWS Account`, CreateAccountStatus) ||
+        sleep(5000)
+          .then(() => CreateAccountStatus.State === 'FAILED' ? Promise.reject(CreateAccountStatus) : createAccount({
+            ...args,
+            accountId: CreateAccountStatus.AccountId,
+            account: {
+              ...args.account,
+              accountStatus: CreateAccountStatus.State,
+              accountId: CreateAccountStatus.AccountId
+            }
+          }))
+      )
     )
   )
 
 const add = ({
   stage,
-  identifier,
+  email,
   organizationalUnitName,
   accountName,
   region = "us-east-1",
   sourceProfile = "default",
-  email,
   groupName,
   accountId,
   projectName
 }) => 
   Promise.resolve({
     stage,
-    identifier,
     organizationalUnitName,
     accountName,
     region,
@@ -256,7 +270,6 @@ const add = ({
     accountName: args.accountName || `${args.projectName}-${args.stage}`,
     accountAlias: (args.accountName || `${args.projectName}-${args.stage}`).toLowerCase().replace(/ /g, ""),
     groupName: (args.groupName || `${args.accountName || `${args.projectName}-${args.stage}`}Admins`),
-    email: (args.email || `${args.accountName || `${args.projectName}-${args.stage}`}@${args.identifier}`),
     roleName: `${(args.accountName || `${args.projectName}-${args.stage}`).replace(/ /,'')}OrganizationAccountAccessRole`
   }))
   .then(args => ({
@@ -278,7 +291,7 @@ const add = ({
   }))
   .then(getRootAccountId)
   .then(getRootOrganizationalUnitId)
-  .then(args => 
+  .then(args =>
     !args.accountId ? (
       createAccount(args)
         .catch(err => console.log(err, err.stack) ||

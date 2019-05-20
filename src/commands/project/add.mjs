@@ -1,7 +1,7 @@
 import shell from 'shelljs'
 import fs from 'fs-extra';
 
-import { projectHome } from './util'
+import { projectHome } from '../util'
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -31,8 +31,10 @@ const gitConfig = ({stage, accountId, projectName}) => `
   
 `
 
-const gitClone = ({stage, accountId, projectName}) => `
-  git clone --single-branch -b ${stage} https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage} ${projectName}
+const gitClone = ({stage, accountId, projectName}) => console.log(`
+  git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage} ${projectName}
+`) || `
+  git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage} ${projectName}
 `
 
 const projectGitConfig = ({stage, accountId, projectName}) => `
@@ -53,7 +55,11 @@ const projectGitConfig = ({stage, accountId, projectName}) => `
 `
 
 const appendToFile = ({file, contents}) =>
-  fs.appendFile(file, contents, 'utf8')
+  fs.readFileSync(file).includes(contents) ? (
+    Promise.resolve(contents)
+  ) : (
+    fs.appendFile(file, contents, 'utf8')
+  )
 
 
 

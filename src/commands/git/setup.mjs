@@ -5,8 +5,12 @@ import fs from 'fs-extra';
 import { projectHome } from '../util'
 
 
-const init = ({stage, projectName}) =>
-	fs.readFile(`${projectHome(projectName)}/.git/config`, 'utf8')
+const setup = ({stage, projectName}) =>
+	(fs.existsSync(`${projectHome(projectName)}/.git/config`) ? (
+		fs.readFile(`${projectHome(projectName)}/.git/config`, 'utf8')
+	) : (
+		Promise.resolve("")
+	))	
 		.then(contents =>
 			contents.includes(`[branch "${stage}"]`) ? (
 				Promise.resolve("")
@@ -22,7 +26,7 @@ cat >> ${projectHome(projectName)}/.git/config << EndOfMessage\n
 	helper = !aws --profile ${projectName.toLowerCase()}-${stage}developer codecommit credential-helper \$@\r
 [remote "${stage}"]\r
 	url = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}\r
-	fetch = +refs/heads/*:refs/remotes/origin/*\r
+	fetch = +refs/heads/*:refs/remotes/${stage}/*\r
 	pushurl = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}\r
 [branch "${stage}"]\r
 	remote = ${stage}\r
@@ -36,4 +40,4 @@ EndOfMessage
 		)
 
 
-export default init
+export default setup

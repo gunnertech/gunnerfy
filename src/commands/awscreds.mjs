@@ -15,7 +15,7 @@ const awscreds = ({projectName, stage}) =>
           .find(line => line.includes(`role/${projectName}-${stage}`))
           .replace(/role_arn *= */, "")
     ))
-    .then(roleArn => console.log(`THE ROLE ARN IS:"${roleArn.trim()}"`, ) || Promise.resolve(
+    .then(roleArn => Promise.resolve(
       new AWS.STS()
         .assumeRole({
           RoleArn: roleArn.trim(),

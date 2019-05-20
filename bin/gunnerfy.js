@@ -132,7 +132,7 @@ program
         Promise.resolve("Adding project")
           .then(() => addProject({...args, projectName}))
           .then(() => setupGit({projectName: projectName, stage: args.stage}) )
-          .then(() => fs.readFile(`${projectHome(projectHome)}/gunnerfy.json`, 'utf8'))
+          .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
           .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
           .then(json => addEnvironment({...args, projectName, ...json}) )
           .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
@@ -140,10 +140,10 @@ program
           .then(() => setupServerless({projectName: projectName, stage: args.stage}))
           .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${projectHome(projectHome)}/react-native-client && npm install
+            cd ${projectHome(projectName)}/react-native-client && npm install
           `).code))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${projectHome(projectHome)}/react-client && npm install
+            cd ${projectHome(projectName)}/react-client && npm install
           `).code))
           .then(() => setupRds({projectName: projectName, stage: args.stage}))
       )
@@ -164,12 +164,12 @@ program
   .option('-u, --user-name <userName>', 'The AWS username to add to the group')
   .option('-s, --stage <stage>', 'The stage you are giving the user access to')
   .option('-p, --profile <profile>', 'The profile associated with the main AWS account.', 'default')
-  .option('-n, --project-name [projectName]', 'The name of the project. If not provided, will use the name of the folder.')
+  .option('-n, --project-name [projectName]', 'The name of the project. If not provided, will use the name in gunnerfy.json.')
   .action((type, args) => 
     Promise.resolve("Adding user to group")
       .then(() => addUser({
         ...args,
-        projectName: args.projectName || path.basename(path.resolve(path.dirname('.')))
+        projectName: args.projectName || JSON.parse(fs.readFileSync(`${projectHome()}/gunnerfy.json`, 'utf8')).projectName
       }))
       .then(args => 
         console.log(args) ||
@@ -368,8 +368,8 @@ program
 program
   .command('new <projectName>')
   .description("Creates a new gunnerfied serverless project")
-  .option('-i, --identifier <identifier>', 'Domain/package identifer of the account owner')
   .option('-o, --organizational-unit-name <organizationalUnitName>', 'Name of organizational unit to find or create')
+  .option('-e, --email [email]', 'unique email address to associate with the new account - required for new accounts')
   .option('-s, --stage [stage]', 'Name of stage to create. If omitted, will user default stage')
   .option('-n, --account-name [accountName]', 'Name of account to find or create. If not passed, one will be geneated')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
@@ -387,40 +387,60 @@ program
         Promise.resolve(`Building Project ${projectName}`)
         .then(() => getTemplate({projectName: projectName}))
         .then(() => setupGit({projectName: projectName, stage: args.stage}) )
-        .then(() => addEnvironment({...args, projectName}) )
-        .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
-        .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
-        .then(() => setupServerless({projectName: projectName, stage: args.stage}))
-        .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
-        .then(code => Promise.resolve(shell.exec(`
-          cd ${projectHome(projectName)}/react-native-client && npm install
-        `).code))
-        .then(code => Promise.resolve(shell.exec(`
-          cd ${projectHome(projectName)}/react-client && npm install
-        `).code))
-        .then(() => setupRds({projectName: projectName, stage: args.stage}))
-        .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
-        .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
-        .then(json => 
-          fs.writeFile(
-            `${projectHome(projectName)}/gunnerfy.json`, 
-            JSON.stringify({
-              ...json,
-              projectName,
-              region: args.region,
-              identifier: args.identifier,
-              organizationalUnitName: args.organizationalUnitName
-            }),
-            'utf8'
+        .then(() =>
+          !!args.accountId ? (
+            Promise.resolve(args)
+          ) : (
+            getAllAccounts({sourceProfile: args.sourceProfile})
+              .then(accounts => Promise.resolve(
+                accounts.find(account => account.Name === `${projectName}-${args.stage}`)
+              ))
+              .then(account => Promise.resolve(!account ? args : {
+                ...args,
+                accountId: account.Id,
+                account: {
+                  ...args.account,
+                  accountId: account.Id
+                }
+              }))
           )
         )
+        .then(args =>
+          addEnvironment({...args, projectName}) 
+            .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
+            .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
+            .then(() => setupServerless({projectName: projectName, stage: args.stage}))
+            .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
+            .then(code => Promise.resolve(shell.exec(`
+              cd ${projectHome(projectName)}/react-native-client && npm install
+            `).code))
+            .then(code => Promise.resolve(shell.exec(`
+              cd ${projectHome(projectName)}/react-client && npm install
+            `).code))
+            .then(() => setupRds({projectName: projectName, stage: args.stage}))
+            .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
+            .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
+            .then(json => 
+              fs.writeFile(
+                `${projectHome(projectName)}/gunnerfy.json`, 
+                JSON.stringify({
+                  ...json,
+                  projectName,
+                  region: args.region,
+                  email: args.email,
+                  organizationalUnitName: args.organizationalUnitName
+                }),
+                'utf8'
+              )
+            )
+            .then(() => Promise.resolve(shell.exec(`
+              cd ${projectHome(projectName)} && 
+              git add . && 
+              git commit -am "Initial commit" && 
+              git push ${args.stage} ${args.stage}
+            `)))
+        )
       )
-      .then(() => Promise.resolve(shell.exec(`
-        cd ${projectHome(projectName)} && 
-        git add . && 
-        git commit -am "Initial commit" && 
-        git push ${args.stage} ${args.stage}
-      `)))
       .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||

@@ -10,7 +10,7 @@ const setvar = ({projectName, name, value}) =>
   replace({
     from: `<${name}>`,
     to: value,
-    files: glob.sync("**/*", {dot: true, nodir: true, cwd: projectHome(projectName)}).filter(file => !file.includes('node_modules') && !file.includes('.git/')).map(file => `${projectHome(projectName)})}/${file}`)
+    files: glob.sync("**/*", {dot: true, nodir: true, cwd: projectHome(projectName)}).filter(file => !file.includes('node_modules') && !file.includes('.git/')).map(file => `${projectHome(projectName)}/${file}`)
   })
 
 export default setvar
