@@ -82,7 +82,7 @@ $ gunnerfy users add -u <user-name> -s <base-stage>
 
 2. The approve will give the team lead a command to send to the new developer for them to run like this:
 ````
-$ gunnerfy add-project <project-name> -a <accountId> -b <baseStage>
+$ gunnerfy add-project <project-name> -a <accountId> -s <baseStage>
 ````
 
 

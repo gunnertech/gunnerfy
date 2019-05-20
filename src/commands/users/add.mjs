@@ -66,7 +66,7 @@ const add = ({projectName, stage, userName, profile='default'}) =>
         
     )
     .then(({Account}) => Promise.resolve(
-      console.log(chalk.green(`${userName} has been added. To start developing, they can run: gunnerfy add-project ${projectName} -a ${Account} -b ${stage}`))
+      console.log(chalk.green(`${userName} has been added. To start developing, they can run: $ gunnerfy add-project ${projectName} -s ${stage}`))
     ))
 
 
