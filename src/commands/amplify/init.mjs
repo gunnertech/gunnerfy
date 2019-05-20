@@ -5,7 +5,7 @@ import { projectHome, workspaceHome } from '../util'
 const init = ({stage, projectName}) =>
   Promise.resolve(`
 REACTCONFIG="{\\
-\\"SourceDir\\":\\"src\\",\\
+\\"SourceDir\\":\\"${projectHome(projectName)}/amplify/src\\",\\
 \\"DistributionDir\\":\\"build\\",\\
 \\"BuildCommand\\":\\"npm-run-script-build\\",\\
 \\"StartCommand\\":\\"npm-run-script-start\\"\\
