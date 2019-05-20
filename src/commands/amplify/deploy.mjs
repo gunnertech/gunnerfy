@@ -1,8 +1,9 @@
 
 import shell from 'shelljs'
+import { projectHome, workspaceHome } from '../util'
 
 
-const deploy = ({npmPath, path}) =>
+const deploy = ({projectName}) =>
   Promise.resolve(`
 CODEGEN="{\\
 \\"generateCode\\":true,\\
@@ -12,7 +13,7 @@ CODEGEN="{\\
 \\"generateDocs\\":true\\
 }"
 
-cd ${path} && ${npmPath}/amplify push \\
+cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify push \\
 --codegen $CODEGEN \\
 --yes    
   `)

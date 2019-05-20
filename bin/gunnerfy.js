@@ -36,10 +36,10 @@ import {
 import { 
   projectHome, 
   projectName as getProjectName, 
-  workspaceHome 
+  workspaceHome,
+  getAllAccounts 
 } from '../src/commands/util'
 
-const currentDir = path.resolve(path.dirname(''))
 
 const sts = ({profile='default', region='us-east-1'}) =>
   new AWS.STS({
@@ -100,9 +100,8 @@ program
 program
   .command('add-project <projectName>')
   .description("Adds an existing project for a user")
-  .option('-a, --account-id <accountId>', 'The AWS account id for the base stage')
-  .option('-b, --base-stage <baseStage>', 'The base stage')
-  .option('-s, --stage [stage]', 'Name of stage to create. If omitted, will user default stage')
+  .option('-s, --stage <stage>', 'Name of stage to create.')
+  .option('-a, --account-id [accountId]', 'The AWS account id for the base stage. If omitted, gunnerfy will try to find the account by its name.')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .action((projectName, args) => 
@@ -112,26 +111,41 @@ program
         stage: args.stage || defaultStage
       }))
       .then(args =>
+        !!args.accountId ? (
+          Promise.resolve(args)
+        ) : (
+          getAllAccounts({sourceProfile: args.sourceProfile})
+            .then(accounts => Promise.resolve(
+              accounts.find(account => account.Name === `${projectName}-${args.stage}`)
+            ))
+            .then(account => Promise.resolve({
+              ...args,
+              accountId: account.Id,
+              account: {
+                ...args.account,
+                accountId: account.Id
+              }
+            }))
+        )
+      )
+      .then(args =>
         Promise.resolve("Adding project")
           .then(() => addProject({...args, projectName}))
-          .then(() => Promise.resolve(shell.exec(`
-            cd ${workspaceHome(projectName)} && git clone --single-branch -b ${args.baseStage} https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${args.baseStage}/ ${projectName}
-          `)))
           .then(() => setupGit({projectName: projectName, stage: args.stage}) )
-          .then(() => fs.readFile(`${currentDir}/${projectName}/gunnerfy.json`, 'utf8'))
+          .then(() => fs.readFile(`${projectHome(projectHome)}/gunnerfy.json`, 'utf8'))
           .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
           .then(json => addEnvironment({...args, projectName, ...json}) )
-          .then(() => configureEnvironment({projectName: projectName, stage: args.stage,  path: `${currentDir}/${projectName}`}))
-          .then(() => setupAmplify({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: `${currentDir}/${projectName}`}))
-          .then(() => setupServerless({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: `${currentDir}/${projectName}`}))
-          .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage, path: `${currentDir}/${projectName}`}))
+          .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
+          .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
+          .then(() => setupServerless({projectName: projectName, stage: args.stage}))
+          .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${currentDir}/${projectName}/react-native-client && npm install
+            cd ${projectHome(projectHome)}/react-native-client && npm install
           `).code))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${currentDir}/${projectName}/react-client && npm install
+            cd ${projectHome(projectHome)}/react-client && npm install
           `).code))
-          .then(() => setupRds({projectName: projectName, stage: args.stage, path: `${currentDir}/${projectName}`}))
+          .then(() => setupRds({projectName: projectName, stage: args.stage}))
       )
       .then(args => 
         console.log(args) ||
@@ -174,9 +188,9 @@ program
   .option('-n, --name <name>', 'The name of the migration')
   .option('-s, --sql <sql>', 'SQL Statement to run')
   .action((type, args) => 
-    Promise.resolve(`Write ${args.sql} to ${currentDir}/serverless/migrations/${new Date().getTime()}-${args.name}.sql`)
-      .then(() => Promise.resolve(shell.mkdir('-p', `${currentDir}/serverless/migrations`)))
-      .then(() => fs.writeFile(`${currentDir}/serverless/migrations/${new Date().getTime()}-${args.name}.sql`, args.sql, 'utf8'))
+    Promise.resolve(`Write ${args.sql} to ${projectHome()}/serverless/migrations/${new Date().getTime()}-${args.name}.sql`)
+      .then(() => Promise.resolve(shell.mkdir('-p', `${projectHome()}/serverless/migrations`)))
+      .then(() => fs.writeFile(`${projectHome()}/serverless/migrations/${new Date().getTime()}-${args.name}.sql`, args.sql, 'utf8'))
       .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||
@@ -309,7 +323,7 @@ program
   .description("Runs watch to allow development locally")
   .action(() =>
     Promise.resolve(execSync(`
-      ${process.env.NVM_BIN}/watch 'rm -rf ./react-client/src/aws-exports.js && cp ./amplify/src/aws-exports.js ./react-client/src/aws-exports.js &&  rm -rf ./react-client/src/graphql && cp -R  ./amplify/src/graphql ./react-client/src && rm -rf ./react-native-client/aws-exports.js && cp ./amplify/src/aws-exports.js ./react-native-client/aws-exports.js &&  rm -rf ./react-native-client/src/graphql && cp -R ./amplify/src/graphql ./react-native-client/src' ./amplify
+      ${process.env.NVM_BIN}/watch 'rm -rf ${projectHome()}/react-client/src/aws-exports.js && cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-client/src/aws-exports.js &&  rm -rf ${projectHome()}/react-client/src/graphql && cp -R  ${projectHome()}/amplify/src/graphql ${projectHome()}/react-client/src && rm -rf ${projectHome()}/react-native-client/aws-exports.js && cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-native-client/aws-exports.js &&  rm -rf ${projectHome()}/react-native-client/src/graphql && cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/react-native-client/src' ${projectHome()}/amplify
     `, {stdio: ['inherit','inherit','inherit']}))
     .then(args => 
         console.log(args) ||
@@ -374,10 +388,10 @@ program
         .then(() => getTemplate({projectName: projectName}))
         .then(() => setupGit({projectName: projectName, stage: args.stage}) )
         .then(() => addEnvironment({...args, projectName}) )
-        .then(() => configureEnvironment({projectName: projectName, stage: args.stage,  path: `${projectHome(projectName)}`}))
-        .then(() => setupAmplify({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: projectHome(projectName)}))
-        .then(() => setupServerless({projectName: projectName, stage: args.stage, npmPath: process.env.NVM_BIN, path: projectHome(projectName)}))
-        .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage, path: projectHome(projectName)}))
+        .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
+        .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
+        .then(() => setupServerless({projectName: projectName, stage: args.stage}))
+        .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
         .then(code => Promise.resolve(shell.exec(`
           cd ${projectHome(projectName)}/react-native-client && npm install
         `).code))
@@ -401,6 +415,12 @@ program
           )
         )
       )
+      .then(() => Promise.resolve(shell.exec(`
+        cd ${projectHome(projectName)} && 
+        git add . && 
+        git commit -am "Initial commit" && 
+        git push ${args.stage} ${args.stage}
+      `)))
       .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||
@@ -416,12 +436,12 @@ program
 
 
 program
-  .command('set-var [projectName]')
+  .command('set-var')
   .description("Adds an existing project for a user")
   .option('-n, --name <name>', 'The name of the variable')
   .option('-v, --value <value>', 'The value')
   .action(args =>
-    setvar({path: projectHome(projectName), name: args.name, value: args.value})
+    setvar({name: args.name, value: args.value})
       .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||

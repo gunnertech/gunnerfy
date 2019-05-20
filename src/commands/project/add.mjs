@@ -1,8 +1,9 @@
 import shell from 'shelljs'
 import fs from 'fs-extra';
-import * as path from 'path';
 
-const currentDir = path.resolve(path.dirname(''))
+import { projectHome } from './util'
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 
 const awsConfig = ({stage, accountId, projectName}) => `
@@ -61,13 +62,14 @@ const add = ({projectName, stage, accountId}) =>
     .then(() => appendToFile({file: `${process.env['HOME']}/.aws/config`, contents: awsConfig({stage, accountId, projectName})}))
     .then(() => appendToFile({file: `${process.env['HOME']}/.aws/credentials`, contents: awsCredentials({stage, accountId, projectName})}))
     .then(() => appendToFile({file: `${process.env['HOME']}/.gitconfig`, contents: gitConfig({stage, accountId, projectName})}))
+    .then(() => sleep(10000))
     .then(() => Promise.resolve(
       shell.exec(
         gitClone({stage, accountId, projectName})
       )
       .code
     ))
-    .then(() => appendToFile({file: `${currentDir}/${projectName}/.git/config`, contents: projectGitConfig({stage, accountId, projectName})}))
+    .then(() => appendToFile({file: `${projectHome(projectName)}/.git/config`, contents: projectGitConfig({stage, accountId, projectName})}))
     
 
 

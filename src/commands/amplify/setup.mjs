@@ -6,24 +6,25 @@ import init from './init';
 import deploy from './deploy';
 import setvar from '../setvar';
 import awscreds from '../awscreds'
+import { projectHome, workspaceHome } from '../util'
 
 
-const setup = ({stage, projectName, path, npmPath}) =>
-  init({stage, projectName, npmPath, path})
-    .then(() => fs.existsSync(`${path}/amplify/backend/api`))
+const setup = ({stage, projectName}) =>
+  init({stage, projectName})
+    .then(() => fs.existsSync(`${projectHome(projectName)}/amplify/backend/api`))
     .then(hasAmplify => Promise.resolve(
       hasAmplify ? (
         ''
       ) : (
         Promise.resolve(execSync(` 
-          (cd ${path} && ${process.env.NVM_BIN}/amplify add api || true) && \\
-          (cd ${path} && ${process.env.NVM_BIN}/amplify add auth || true) && \\
-          (cd ${path} && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
-          (cd ${path} && ${process.env.NVM_BIN}/amplify add storage || true)
+          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add api || true) && \\
+          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add auth || true) && \\
+          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
+          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add storage || true)
         `, {stdio: ['inherit','inherit','inherit']}))
       )
     ))
-    .then(() => deploy({npmPath, path}))
+    .then(() => deploy({projectName}))
     .then(() => 
       awscreds({projectName, stage})
         .then(credentials => Promise.resolve(
@@ -33,7 +34,7 @@ const setup = ({stage, projectName, path, npmPath}) =>
           }))
           .listUserPools({MaxResults: 1})
           .promise()
-          .then(({UserPools}) => setvar({path, name: `${stage}-user-pool-id`, value: UserPools[0].Id}))
+          .then(({UserPools}) => setvar({projectName, name: `${stage}-user-pool-id`, value: UserPools[0].Id}))
         ))
     )
     .then(() => 
@@ -46,7 +47,7 @@ const setup = ({stage, projectName, path, npmPath}) =>
           .listRoles()
           .promise()
           .then(({Roles}) => Roles.find(role => role.RoleName.endsWith('-authRole')).RoleName)
-          .then(roleName => setvar({path, name: `${stage}-auth-role-name`, value: roleName}))
+          .then(roleName => setvar({projectName, name: `${stage}-auth-role-name`, value: roleName}))
         ))
     )
     .then(() => 
@@ -59,7 +60,7 @@ const setup = ({stage, projectName, path, npmPath}) =>
           .listBuckets()
           .promise()
           .then(({Buckets}) => Buckets.find(bucket => bucket.Name.endsWith(`-${stage}`)).Name)
-          .then(bucketName => setvar({path, name: `${stage}-bucket-name`, value: bucketName}))
+          .then(bucketName => setvar({projectName, name: `${stage}-bucket-name`, value: bucketName}))
         ))
     )
 

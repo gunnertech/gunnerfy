@@ -4,6 +4,7 @@ import shell from 'shelljs'
 
 import setvar from '../../setvar';
 import awscreds from '../../awscreds'
+import { projectHome } from '../../util'
 
 const removeProperties = ((props, obj) => {
   let copy = {...obj};
@@ -11,7 +12,7 @@ const removeProperties = ((props, obj) => {
   return copy
 })
 
-const setup = ({stage, projectName, path}) =>
+const setup = ({stage, projectName}) =>
   awscreds({projectName, stage})
     .then(credentials =>
       Promise.resolve(
@@ -23,7 +24,7 @@ const setup = ({stage, projectName, path}) =>
       )
     )
     .then(client => 
-      fs.readFile(`${path}/react-client/.env.${stage}`, 'utf8')
+      fs.readFile(`${projectHome(projectName)}/react-client/.env.${stage}`, 'utf8')
         .then(contents => contents.split("\n").reduce((obj, currentValue) => ({
           ...obj,
           [currentValue.split('=')[0]]: currentValue.split('=')[1].replace(/('|")/g,"")
@@ -96,9 +97,9 @@ const setup = ({stage, projectName, path}) =>
           )
         )
     )
-    .then(({app}) => setvar({path, name: `${stage}-app-id`, value: app.appId}))
+    .then(({app}) => setvar({projectName, name: `${stage}-app-id`, value: app.appId}))
     .then(() => Promise.resolve(shell.exec(`
-      cd ${path} && git add . && git commit -am "sets variables; sets up amplify hosting" && git push
+      cd ${projectHome(projectName)} && git add . && git commit -am "sets variables; sets up amplify hosting"
 		`).code))
 
 

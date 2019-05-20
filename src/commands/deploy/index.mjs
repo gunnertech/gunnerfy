@@ -25,13 +25,13 @@ const backend = ({stage}) =>
             ${process.env.NVM_BIN}/serverless deploy -s ${stage}
           `)   
         ))
-        .then(() => amplifyDeploy({npmPath: process.env.NVM_BIN, path: "."}))
+        .then(() => amplifyDeploy({projectName}))
         .then(obj => new Promise((resolve, reject) => 
           rl.question('Would you like to run database migrations (y/N): ', answer => resolve(answer))
         ))
         .then(answer =>
           answer === 'y' ? (
-            migrate({stage, projectName, path: "."})
+            migrate({stage, projectName})
           ) : (
             Promise.resolve("")
           )

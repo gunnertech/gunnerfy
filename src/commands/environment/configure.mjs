@@ -1,5 +1,7 @@
 import fs from 'fs-extra';
 
+import { projectHome, workspaceHome } from '../util'
+
 const grab = ({stage, projectName, targetFile, templateFile}) =>
   Promise.resolve('Configuring Environment')
     .then(() => fs.readFile(templateFile, 'utf8'))
@@ -22,37 +24,37 @@ const grab = ({stage, projectName, targetFile, templateFile}) =>
     )
 
 
-const configure = ({stage, projectName, path}) =>
+const configure = ({stage, projectName}) =>
   Promise.resolve('Configuring Environment')
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/templates/environment.js.txt`,
-      targetFile: `${path}/react-native-client/src/environment.js`
+      templateFile: `${projectHome(projectName)}/templates/environment.js.txt`,
+      targetFile: `${projectHome(projectName)}/react-native-client/src/environment.js`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/templates/.env.stage.txt`,
-      targetFile: `${path}/react-client/.env.${stage}`
+      templateFile: `${projectHome(projectName)}/templates/.env.stage.txt`,
+      targetFile: `${projectHome(projectName)}/react-client/.env.${stage}`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/templates/secrets.yml.txt`,
-      targetFile: `${path}/serverless/secrets.yml`
+      templateFile: `${projectHome(projectName)}/templates/secrets.yml.txt`,
+      targetFile: `${projectHome(projectName)}/serverless/secrets.yml`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/templates/env.yml.txt`,
-      targetFile: `${path}/serverless/env.yml`
+      templateFile: `${projectHome(projectName)}/templates/env.yml.txt`,
+      targetFile: `${projectHome(projectName)}/serverless/env.yml`
     }))
     .then(() => grab({
       stage, 
       projectName, 
-      templateFile: `${path}/templates/git.txt`,
-      targetFile: `${path}/.git/config`
+      templateFile: `${projectHome(projectName)}/templates/git.txt`,
+      targetFile: `${projectHome(projectName)}/.git/config`
     }))
     
 

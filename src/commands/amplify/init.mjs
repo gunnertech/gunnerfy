@@ -1,8 +1,8 @@
 
 import shell from 'shelljs'
+import { projectHome, workspaceHome } from '../util'
 
-
-const init = ({stage, projectName, npmPath, path}) =>
+const init = ({stage, projectName}) =>
   Promise.resolve(`
 REACTCONFIG="{\\
 \\"SourceDir\\":\\"src\\",\\
@@ -30,7 +30,7 @@ PROVIDERS="{\\
 \\"awscloudformation\\":$AWSCLOUDFORMATIONCONFIG\\
 }"
 
-cd ${path} && git checkout ${stage} && ${npmPath}/amplify init \\
+cd ${projectHome(projectName)} && git checkout ${stage} && ${process.env.NVM_BIN}/amplify init \\
 --amplify $AMPLIFY \\
 --frontend $FRONTEND \\
 --providers $PROVIDERS \\

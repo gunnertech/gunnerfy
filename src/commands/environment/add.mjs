@@ -3,6 +3,10 @@ import shell from 'shelljs'
 
 import AWS from 'aws-sdk'
 
+import { 
+  getAllAccounts 
+} from '../src/commands/util'
+
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -272,9 +276,28 @@ const add = ({
       region: 'us-east-1'
     })
   }))
-  .then(args => !args.accountId ? createAccount(args) : Promise.resolve(args))
   .then(getRootAccountId)
   .then(getRootOrganizationalUnitId)
+  .then(args => 
+    !args.accountId ? (
+      createAccount(args)
+        .catch(err => console.log(err, err.stack) ||
+          getAllAccounts({profile: args.sourceProfile})
+            .then(accounts => Promise.resolve(
+              accounts.find(account => account.Name === args.accountName)
+            ))
+            .then(account => Promise.resolve({
+              ...args,
+              accountId: account.Id,
+              account: {
+                ...args.account,
+                accountId: account.Id
+              }
+            }))
+        )
+    ) : (
+      Promise.resolve(args)) 
+    )
   .then(findOrganizationalUnit)
   .then(args => !args.organizationalUnitId ? createOrganizationalUnit(args) : Promise.resolve(args))
   .then(moveAccount)

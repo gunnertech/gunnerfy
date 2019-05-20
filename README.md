@@ -221,7 +221,6 @@ However, you should also remove the IAM Group and IAM Policy in the main account
 1. Allow sql migrations to have an up and a down
 1. Add back in sentry integration
 1. remove ``process.env.NVM_BIN``
-1. cleanup ``path`` params
 1. Update amplify host on web deploy so it has most recent environment variables
 1. Wrap all binaries (yarn, npm, expo, amplify) in ``gunnerfy``
 1. Allow user to select package manager (yarn or npm)
