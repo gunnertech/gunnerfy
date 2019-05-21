@@ -221,7 +221,10 @@ const createAccount = args =>
         })
       )
     ) : args.account.accountStatus === 'SUCCEEDED' ? (
-      Promise.resolve(args)
+      Promise.resolve({
+        ...args,
+        accountId: args.account.id
+      })
     ) : (
       args.organizations.describeCreateAccountStatus({
         CreateAccountRequestId: args.account.creationStatusId
