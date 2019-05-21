@@ -101,14 +101,14 @@ $ gunnerfy develop
 
 ````
 $ cd react-client
-$ npm run start
+$ STAGE=<stage> npm run start
 ````
 
 ### React Native Client 
 
 ````
 $ cd react-native-client
-$ npm run <simulator> (ios|android)
+$ STAGE=<stage> npm run <simulator> (ios|android)
 ````
 
 ## Start of iteration
