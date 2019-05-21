@@ -14,8 +14,10 @@ const grab = ({stage, projectName, targetFile, templateFile}) =>
           .then(existingContents =>
             existingContents.replace(new RegExp(projectName, 'g'), "").includes(stage) ? (
               Promise.resolve("")
+            ) : existingContents.match(/(\/\/|\#)<new-environment>/) ? (
+              fs.writeFile(targetFile, existingContents.replace(/(\/\/|\#)<new-environment>/g, `${contents}\n`), 'utf8')
             ) : (
-              fs.writeFile(targetFile, existingContents.replace(/(\/\/|\#)<new-environment>/g, contents), 'utf8')
+              fs.appendFile(targetFile, `${contents}\n`, 'utf8')
             )
           )
       ) : (
