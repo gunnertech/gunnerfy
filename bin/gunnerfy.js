@@ -140,7 +140,11 @@ program
           .then(() => setupServerless({projectName: projectName, stage: args.stage}))
           .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${projectHome(projectName)}/react-native-client && npm install
+            cd ${projectHome(projectName)}/react-native-client && 
+            npm install &&
+            rm -rf package.json &&
+            cp app.json package.json &&
+            echo "module.exports = {ENV: require('path').basename(__filename).split('.')[0]}" > ${args.stage}.config.js
           `).code))
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)}/react-client && npm install
@@ -412,7 +416,11 @@ program
             .then(() => setupServerless({projectName: projectName, stage: args.stage}))
             .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
             .then(code => Promise.resolve(shell.exec(`
-              cd ${projectHome(projectName)}/react-native-client && npm install
+              cd ${projectHome(projectName)}/react-native-client && 
+              npm install &&
+              rm -rf package.json &&
+              cp app.json package.json &&
+              echo "module.exports = {ENV: require('path').basename(__filename).split('.')[0]}" > ${args.stage}.config.js
             `).code))
             .then(code => Promise.resolve(shell.exec(`
               cd ${projectHome(projectName)}/react-client && npm install
