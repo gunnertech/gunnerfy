@@ -221,6 +221,7 @@ const createAccount = args =>
         })
       )
     ) : args.account.accountStatus === 'SUCCEEDED' ? (
+      console.log("HEREHERHEHEH", args.account) ||
       Promise.resolve({
         ...args,
         accountId: args.account.id
@@ -295,7 +296,7 @@ const add = ({
   .then(getRootAccountId)
   .then(getRootOrganizationalUnitId)
   .then(args =>
-    !args.accountId ? (
+    (!args.accountId ? (
       createAccount(args)
         .catch(err => console.log(err, err.stack) ||
           getAllAccounts({profile: args.sourceProfile})
@@ -313,7 +314,7 @@ const add = ({
         )
     ) : (
       Promise.resolve(args)) 
-    )
+    ))
   .then(findOrganizationalUnit)
   .then(args => !args.organizationalUnitId ? createOrganizationalUnit(args) : Promise.resolve(args))
   .then(moveAccount)
