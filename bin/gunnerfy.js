@@ -149,11 +149,22 @@ program
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)}/react-client && npm install
           `).code))
-          .then(() => setupRds({projectName: projectName, stage: args.stage}))
+          .then(() => args)
+          // .then(() => setupRds({projectName: projectName, stage: args.stage}))
       )
       .then(args => 
-        console.log(args) ||
-        console.log(chalk.green('All Finished!')) ||
+        console.log("") ||
+        console.log("") ||
+        console.log("") ||
+        console.log(chalk.green(`${projectName} added with stage ${args.stage}. If there was an RDS cluster setup with this stage, please get the secrets.yml info from the stage owner`)) ||
+        console.log("") ||
+        console.log("") ||
+        console.log("") ||
+        console.log(chalk.green(`To congifure this project with your own environment, run:`)) ||
+        console.log(chalk.green(`$ gunnerfy new ${projectName} -e <email> -o ${JSON.parse(fs.readFileSync(`${projectHome(projectName)}/gunnerfy.json`, 'utf8')).organizationalUnitName}`)) ||
+        console.log("") ||
+        console.log("") ||
+        console.log("") ||
         process.exit(0)
       )
       .catch(err => 

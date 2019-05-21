@@ -16,12 +16,12 @@ const setup = ({stage, projectName}) =>
       hasAmplify ? (
         ''
       ) : (
-        Promise.resolve(execSync(` 
+        execSync(` 
           (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add api || true) && \\
           (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add auth || true) && \\
           (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
           (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add storage || true)
-        `, {stdio: ['inherit','inherit','inherit']}))
+        `, {stdio: ['inherit','inherit','inherit']})
       )
     ))
     .then(() => deploy({projectName}))

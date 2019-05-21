@@ -25,7 +25,7 @@ const setup = ({stage, projectName}) =>
     )
     .then(client => 
       fs.readFile(`${projectHome(projectName)}/react-client/.env.${stage}`, 'utf8')
-        .then(contents => contents.split("\n").reduce((obj, currentValue) => ({
+        .then(contents => contents.split("\n").reduce((obj, currentValue) => !currentValue.split('=')[0] ? obj : ({
           ...obj,
           [currentValue.split('=')[0]]: currentValue.split('=')[1].replace(/('|")/g,"")
         }),{}))
