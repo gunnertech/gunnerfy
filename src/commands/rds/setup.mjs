@@ -61,7 +61,7 @@ const setup = ({stage, projectName, force}) =>
           .then(obj => 
             fs.writeFile(`${projectHome(projectName)}/serverless/secrets.yml`, yaml.safeDump(obj), 'utf8')
           )
-          .then(code => Promise.resolve(shell.exec(`
+          .then(code => console.log(`cd ${projectHome(projectName)}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}`) || Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}
           `).code))
           .then(() => 

@@ -16,7 +16,7 @@ const setup = ({stage, projectName}) =>
 				Promise.resolve("")
 			) : (
 				Promise.resolve('Setting up Git')
-					.then(() => Promise.resolve(shell.exec(`
+					.then(() => contents.includes(`${projectName}`) ? Promise.resolve("") : Promise.resolve(shell.exec(`
 						cd ${projectHome(projectName)} && git init
 					`).code))
 					.then(code => Promise.resolve(shell.exec(`
