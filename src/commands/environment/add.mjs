@@ -195,36 +195,53 @@ const getRootAccountId = args =>
     }))
 
 const createAccount = args =>
-  !!args.email || !!args.accountId ? (
+  (!!args.email || !!args.accountId ? (
     Promise.resolve(args)
   ) : (new Promise(resolve => 
     rl.question('Enter a unique email address to be used for this AWS account: ', answer => resolve({
       ...args,
       email: answer
     }))
-  ))
-  .then(args =>
+  )))
+  .then(args => (
     !args.account ? (
-      args.organizations.createAccount({
-        AccountName: args.accountName,
-        Email: args.email,
-        RoleName: args.roleName
-      })
-      .promise()
-      .then(({CreateAccountStatus}) => 
-        console.log(CreateAccountStatus) ||
-        createAccount({
-          ...args,
-          account: {
-            creationStatusId: CreateAccountStatus.Id
-          }
-        })
-      )
+      getAllAccounts({profile: args.sourceProfile})
+        .then(accounts => Promise.resolve(
+          accounts.find(account => account.Name === args.accountName)
+        ))
+        .then(account => (
+          !!account ? (
+            Promise.resolve({
+              ...args,
+              accountId: account.Id,
+              account: {
+                ...args.account,
+                accountId: account.Id
+              }
+            })
+          ) : (
+            args.organizations.createAccount({
+              AccountName: args.accountName,
+              Email: args.email,
+              RoleName: args.roleName
+            })
+            .promise()
+            .then(({CreateAccountStatus}) => 
+              console.log(CreateAccountStatus) ||
+              createAccount({
+                ...args,
+                account: {
+                  creationStatusId: CreateAccountStatus.Id
+                }
+              })
+            )
+          )
+        ))
     ) : args.account.accountStatus === 'SUCCEEDED' ? (
       console.log("HEREHERHEHEH", args.account) ||
       Promise.resolve({
         ...args,
-        accountId: args.account.id
+        accountId: args.account.accountId
       })
     ) : (
       args.organizations.describeCreateAccountStatus({
@@ -245,7 +262,7 @@ const createAccount = args =>
           }))
       )
     )
-  )
+  ))
 
 const add = ({
   stage,
