@@ -233,7 +233,6 @@ program
         Promise.resolve(`Deploying`)
           .then(() => Promise.resolve(
             shell.exec(`
-              git checkout ${args.stage} && 
               ${process.env.NVM_BIN}/amplify env checkout ${args.stage}
             `)   
           ))
