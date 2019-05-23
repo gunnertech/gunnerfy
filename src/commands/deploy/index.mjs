@@ -26,16 +26,17 @@ const backend = ({stage}) =>
           `)   
         ))
         .then(() => amplifyDeploy({projectName}))
-        .then(obj => new Promise((resolve, reject) => 
-          rl.question('Would you like to run database migrations (y/N): ', answer => resolve(answer))
-        ))
-        .then(answer =>
-          answer === 'y' ? (
-            migrate({stage, projectName})
-          ) : (
-            Promise.resolve("")
-          )
-        )  
+        .then(() => migrate({stage, projectName}))
+        // .then(obj => new Promise((resolve, reject) => 
+        //   rl.question('Would you like to run database migrations (y/N): ', answer => resolve(answer))
+        // ))
+        // .then(answer =>
+        //   answer === 'y' ? (
+        //     migrate({stage, projectName})
+        //   ) : (
+        //     Promise.resolve("")
+        //   )
+        // )  
     )
     .then(() => Promise.resolve(
       shell.exec(`
