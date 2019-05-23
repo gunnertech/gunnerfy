@@ -209,18 +209,3 @@ If everything is "ACTIVE", you're safe to deploy
 If you want to delete an account, simply close the account.
 
 However, you should also remove the IAM Group and IAM Policy in the main account as well
-
-# TODO
-
-1. Refactor all serverless variables inside the Resource block in serverless.yml into Parameters and Refs
-1. Add Branch integration
-1. Fix error with RDS Setup on the same project+stage combo - i.e. running ``$ gunnerfy new look4openhouse -o ReneeShane`` twice should skip setup the second time
-1. Document optional settings and resources (i.e. Guest User, IAM Groups, etc)
-1. Put in generic Gunner Technolgy branding instead of SimpliSurvey
-1. Add view generators
-1. Add route generators
-1. Allow sql migrations to have an up and a down
-1. remove ``process.env.NVM_BIN``
-1. Update amplify host on web deploy so it has most recent environment variables
-1. Allow user to select package manager (yarn or npm)
-1. Supress all errors that are "OK"
