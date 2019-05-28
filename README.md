@@ -18,7 +18,8 @@ Install the following
 
 ## Installation
 ````
-npm install git+ssh://git@github.com/gunnertech/gunnerfy.git -g
+$ nvm use 12
+$ npm install git+ssh://git@github.com/gunnertech/gunnerfy.git -g
 ````
 
 ## Platform
