@@ -55,7 +55,7 @@ const submit = ({stage, targetStage, iterationEndDate}) =>
       .then(() => 
         new AWS.CodeCommit({
           credentials: new AWS.SharedIniFileCredentials({
-            profile: `${projectName.toLowerCase()}-${stage}developer`,
+            profile: `${projectName.toLowerCase()}-${targetStage}developer`,
             filename: `${process.env['HOME']}/.aws/credentials`
           }),
           region: 'us-east-1'

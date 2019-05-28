@@ -36,7 +36,7 @@ const setup = ({stage, projectName}) =>
       platform: 'WEB',
       customRules: [
         {
-          "source":"</^[^.]+$|\.(?!(css|json|gif|ico|jpg|js|png|txt|svg|woff|ttf)$)([^.]+$)/>",
+          "source":"</^[^.]+$|\.(?!(mov|mp4|css|json|gif|ico|jpg|js|png|txt|svg|woff|ttf)$)([^.]+$)/>",
           "target":"/index.html",
           "status":"200"
         },
@@ -68,7 +68,8 @@ const setup = ({stage, projectName}) =>
                 appId: app.appId,
                 framework: 'react',
                 enableNotification: true,
-                branchName: stage
+                branchName: stage,
+                stage: "PRODUCTION"
               })
               .promise()
               .then(() => Promise.resolve({app}))
@@ -88,7 +89,8 @@ const setup = ({stage, projectName}) =>
                   appId: app.appId,
                   framework: 'react',
                   enableNotification: true,
-                  branchName: stage
+                  branchName: stage,
+                  stage: "PRODUCTION"
                 })
                 .promise()
                 .then(() => ({app}))

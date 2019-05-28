@@ -156,17 +156,20 @@ $ gunnerfy git-tag -s <stage> -i <iteration-end-date (format: YYYYMMDD)>
 ### Backend
 
 ````
-$ gunnerfy deploy backend
+
+$ gunnerfy deploy backend -s <stage>
 ````
 
 ### React Native Front End
 ````
-$ gunnerfy deploy mobile
+$ git checkout <stage>
+$ gunnerfy deploy mobile -s <stage>
 ````
 ### React Front End
 
 ````
-$ gunnerfy deploy web
+$ git checkout <stage>
+$ gunnerfy deploy web -s <stage>
 ````
 
 
