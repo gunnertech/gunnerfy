@@ -6,6 +6,31 @@ import setvar from '../../setvar';
 import awscreds from '../../awscreds'
 import { projectHome } from '../../util'
 
+const getServiceRoleArn = credentials =>
+  Promise.resolve(new AWS.IAM({
+    credentials,
+    region: 'us-east-1'
+  }))
+    .then(iam =>
+      iam.getRole({RoleName: "amplifyconsole-backend-role2"})
+        .promise()
+        .then(({Role: {Arn}}) => Arn)
+        .catch(() => 
+          iam.createRole({
+            Path: "/",
+            RoleName: "amplifyconsole-backend-role2",
+            AssumeRolePolicyDocument: JSON.stringify({"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"amplify.amazonaws.com"},"Action":"sts:AssumeRole"}]})
+          })
+          .promise()
+          .then(({Role: {Arn}}) => 
+            iam
+              .attachRolePolicy({RoleName: "amplifyconsole-backend-role2", PolicyArn: Arn})
+              .promise()
+              .then(() => Arn)
+          )
+        )
+    )
+
 const removeProperties = ((props, obj) => {
   let copy = {...obj};
   props.forEach(key => {delete copy[key];} );
@@ -15,23 +40,26 @@ const removeProperties = ((props, obj) => {
 const setup = ({stage, projectName}) =>
   awscreds({projectName, stage})
     .then(credentials =>
-      Promise.resolve(
-        new AWS.Amplify({
-          apiVersion: '2017-07-25',
-          credentials,
-          region: 'us-east-1'
-        })
-      )
+      Promise.all([
+        Promise.resolve(
+          new AWS.Amplify({
+            apiVersion: '2017-07-25',
+            credentials,
+            region: 'us-east-1'
+          })
+        ),
+        getServiceRoleArn(credentials)
+      ])
     )
-    .then(client => 
+    .then(([client, serviceRoleArn]) => 
       fs.readFile(`${projectHome(projectName)}/react-client/.env.${stage}`, 'utf8')
         .then(contents => contents.split("\n").reduce((obj, currentValue) => !currentValue.split('=')[0] ? obj : ({
           ...obj,
           [currentValue.split('=')[0]]: currentValue.split('=')[1].replace(/('|")/g,"")
         }),{}))
-        .then(options => Promise.resolve([client, options]))
+        .then(options => Promise.resolve([client, options, serviceRoleArn]))
     )
-    .then(([client, options]) => Promise.resolve([client, {
+    .then(([client, options, serviceRoleArn]) => Promise.resolve([client, {
       name: `${projectName}-${stage}`,
       platform: 'WEB',
       customRules: [
@@ -49,6 +77,7 @@ const setup = ({stage, projectName}) =>
       enableBasicAuth: false,
       enableBranchAutoBuild: true,
       environmentVariables: options,
+      iamServiceRoleArn: serviceRoleArn
     }]))
     .then(([client, options]) =>
       client
@@ -64,7 +93,7 @@ const setup = ({stage, projectName}) =>
             .then(() => Promise.resolve({app: apps[0]}))
             .then(({app}) =>
               client.createBranch({
-                ...removeProperties(["customRules", "platform", "name", "enableBranchAutoBuild"], options),
+                ...removeProperties(["iamServiceRoleArn", "customRules", "platform", "name", "enableBranchAutoBuild"], options),
                 appId: app.appId,
                 framework: 'react',
                 enableNotification: true,
@@ -85,7 +114,7 @@ const setup = ({stage, projectName}) =>
               .promise()
               .then(({app}) =>
                 client.createBranch({
-                  ...removeProperties(["customRules", "platform", "name", "enableBranchAutoBuild"], options),
+                  ...removeProperties(["iamServiceRoleArn", "customRules", "platform", "name", "enableBranchAutoBuild"], options),
                   appId: app.appId,
                   framework: 'react',
                   enableNotification: true,
