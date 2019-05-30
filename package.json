@@ -1,6 +1,6 @@
 {
   "name": "gunnerfy",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Toolkit for Expo, React, Serverless Framework, AppSync and Amplify development",
   "main": "index.js",
   "scripts": {
@@ -8,17 +8,17 @@
   },
   "type": "module",
   "dependencies": {
-    "@aws-amplify/cli": "^1.6.9",
+    "@aws-amplify/cli": "^1.7.0",
     "aws-sdk": "2.457.0",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "exec-sh": "^0.3.2",
-    "expo-cli": "^2.18.0",
+    "expo-cli": "^2.18.7",
     "fs-extra": "^8.0.1",
     "glob": "^7.1.4",
     "js-yaml": "^3.13.1",
     "replace-in-file": "^4.1.0",
-    "serverless": "^1.42.3",
+    "serverless": "^1.44.1",
     "shelljs": "^0.8.3",
     "watch": "^1.0.2"
   },
