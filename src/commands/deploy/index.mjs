@@ -4,6 +4,7 @@ import shell from 'shelljs'
 import readline from 'readline'
 
 import amplifyDeploy from '../amplify/deploy'
+import hostingSetup from '../amplify/hosting/setup'
 import migrate from '../rds/migrate'
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -48,7 +49,8 @@ const backend = ({stage}) =>
 const web = ({stage}) =>
   fs.readFile(`./gunnerfy.json`, 'utf8')
     .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
-    .then(({projectName}) =>
+    .then(({projectName}) => Promise.all([
+      hostingSetup({stage, projectName}),
       Promise.resolve(
         new AWS.Amplify({
           apiVersion: '2017-07-25',
@@ -59,8 +61,8 @@ const web = ({stage}) =>
           region: 'us-east-1'
         })
       )
-    )
-    .then(client =>
+    ]))
+    .then(([_, client]) =>
       client
         .listApps()
         .promise()

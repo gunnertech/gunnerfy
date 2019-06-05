@@ -24,7 +24,7 @@ const getServiceRoleArn = credentials =>
           .promise()
           .then(({Role: {Arn}}) => 
             iam
-              .attachRolePolicy({RoleName: "amplifyconsole-backend-role2", PolicyArn: Arn})
+              .attachRolePolicy({RoleName: "amplifyconsole-backend-role2", PolicyArn: 'arn:aws:iam::aws:policy/AdministratorAccess'})
               .promise()
               .then(() => Arn)
           )
