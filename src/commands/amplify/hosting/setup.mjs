@@ -64,7 +64,7 @@ const setup = ({stage, projectName}) =>
       platform: 'WEB',
       customRules: [
         {
-          "source":"</^[^.]+$|\.(?!(mov|mp4|css|json|gif|ico|jpg|js|png|txt|svg|woff|ttf)$)([^.]+$)/>",
+          "source":"</^[^.]+$|\.(?!(css|json|mp4|gif|ico|jpg|js|png|txt|svg|woff|ttf)$)([^.]+$)/>	",
           "target":"/index.html",
           "status":"200"
         },
