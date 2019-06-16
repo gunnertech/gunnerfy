@@ -189,22 +189,6 @@ $ gunnerfy deploy web -s <stage>
 
 # Gotchas
 
-## DynamoDB
-
-### One index at a time
-
-DynamoDB will not let you create or delete two GSIs at the same time and for some reason, CloudFormation isn't smart enough to wait and do them sequentially.
-
-This is especially problematic with the @connection directive
-
-Try using this snippet before deploying new indexes to make sure the coast is clear:
-
-````
-$ aws dynamodb describe-table --table-name <table-name> --query Table.GlobalSecondaryIndexes[*].IndexStatus --profile <profile>
-````
-
-If everything is "ACTIVE", you're safe to deploy
-
 ## Accounts
 
 If you want to delete an account, simply close the account.
