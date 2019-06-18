@@ -238,7 +238,6 @@ const createAccount = args =>
           )
         ))
     ) : args.account.accountStatus === 'SUCCEEDED' ? (
-      console.log("HEREHERHEHEH", args.account) ||
       Promise.resolve({
         ...args,
         accountId: args.account.accountId
