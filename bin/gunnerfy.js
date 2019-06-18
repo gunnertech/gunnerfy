@@ -433,8 +433,8 @@ program
             .then(code => Promise.resolve(shell.exec(`
               cd ${projectHome(projectName)}/react-native-client && 
               npm install &&
-              rm -rf package.json &&
-              cp app.json package.json &&
+              rm -rf config.json &&
+              cp app.json config.json &&
               echo "module.exports = {ENV: require('path').basename(__filename).split('.')[0]}" > ${args.stage}.config.js
             `).code))
             .then(code => Promise.resolve(shell.exec(`
