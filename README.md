@@ -92,7 +92,7 @@ $ gunnerfy add-project <project-name> -a <accountId> -s <baseStage>
 
 ## Running Locally
 
-### Backend 
+### Backend (ALWAYS RUN THIS)
 
 ````
 $ gunnerfy develop
