@@ -231,11 +231,11 @@ program
       }))
       .then(args =>
         Promise.resolve(`Deploying`)
-          .then(() => Promise.resolve(
-            shell.exec(`
-              git add .; git commit -am "deploying"; git checkout ${args.stage}
-            `)   
-          ))
+          // .then(() => Promise.resolve(
+          //   shell.exec(`
+          //     git add .; git commit -am "deploying"; git checkout ${args.stage}
+          //   `)   
+          // ))
           .then(() => Promise.resolve(
             shell.exec(`
               ${process.env.NVM_BIN}/amplify env checkout ${args.stage}
