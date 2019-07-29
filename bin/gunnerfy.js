@@ -393,7 +393,6 @@ program
   .option('-n, --account-name [accountName]', 'Name of account to find or create. If not passed, one will be geneated')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
-  .option('-e, --email [email]', 'Email address to use for the new account created. If not passed, one will be generated automatically')
   .option('-g, --group-name [groupName]', 'The name of the IAM group to find or create. If not passed, one will be generated automatically')
   .option('-a, --account-Id [accountId]', 'If passed will add the specified account to the organization and not create a new one.')
   .action((projectName, args) =>
