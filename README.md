@@ -188,8 +188,6 @@ $ gunnerfy deploy web -s <stage>
 1. [RxJS Docs](https://rxjs-dev.firebaseapp.com/guide/overview)
 1. [AppSync Docs](https://docs.aws.amazon.com/appsync/latest/devguide/welcome.html)
 
-# Gotchas
-
 ## Accounts
 
 If you want to delete an account, simply close the account.
