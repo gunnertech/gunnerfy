@@ -172,6 +172,7 @@ $ gunnerfy deploy web -s <stage>
 
 
 # Recommended Training Material
+1. [IAM Cross Account Access](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_aws-accounts.html)
 1. [Amplify GraphQL](https://aws-amplify.github.io/docs/cli/graphql)
 1. [Amplify Workflow](https://aws-amplify.github.io/docs/cli/multienv?sdk=js)
 1. [Amplify VSCode Extension](https://github.com/aws-amplify/amplify-js/wiki/VS-Code-Snippet-Extension#full-code-block-snippet-documentation)
