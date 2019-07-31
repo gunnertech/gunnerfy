@@ -22,7 +22,10 @@ const getAllAccounts = ({accounts=[], nextToken, sourceProfile='default'} = {acc
           nextToken: data.NextToken
         })
       ) : (
-        Promise.resolve(accounts)
+        Promise.resolve([
+          ...accounts,
+          ...data.Accounts
+        ])
       )
     )
 

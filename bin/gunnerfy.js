@@ -411,9 +411,9 @@ program
           ) : (
             getAllAccounts({sourceProfile: args.sourceProfile})
               .then(accounts => Promise.resolve(
-                accounts.find(account => account.Name === `${projectName}-${args.stage}`)
+                accounts.find(account => console.log(account.Name) || account.Name === `${projectName}-${args.stage}`)
               ))
-              .then(account => Promise.resolve(!account ? args : {
+              .then(account => console.log("PROJECT?", project) || Promise.resolve(!account ? args : {
                 ...args,
                 accountId: account.Id,
                 account: {

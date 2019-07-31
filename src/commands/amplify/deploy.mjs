@@ -21,11 +21,13 @@ cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify push \\
   `)
     .then(cmd => Promise.resolve(shell.exec(cmd).code))
     .then(code => code === 0 ? Promise.resolve(code) : Promise.reject("amplify deploy failed"))
-    .then(cmd => Promise.resolve(!fs.existsSync(`${projectHome(projectName)}/src/graphql`) ? "" : shell.exec(`
+    .then(() => shell.exec(`cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify codegen statements`).code)
+    .then(() => Promise.resolve(!fs.existsSync(`${projectHome(projectName)}/src/graphql`) ? "" : shell.exec(`
       rm -rf ${projectHome(projectName)}/amplify/src/graphql &&
       mv ${projectHome(projectName)}/src/graphql ${projectHome(projectName)}/amplify/src &&
       rm -rf ${projectHome(projectName)}/src
     `).code))
+    
 
 
 export default deploy
