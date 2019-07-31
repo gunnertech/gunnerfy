@@ -77,7 +77,52 @@ const setup = ({stage, projectName}) =>
       enableBasicAuth: false,
       enableBranchAutoBuild: true,
       environmentVariables: options,
-      iamServiceRoleArn: serviceRoleArn
+      iamServiceRoleArn: serviceRoleArn,
+//       buildSpec: `
+// version: 0.1
+// backend:
+//   phases:
+//     preBuild:
+//       commands:
+//         - ls
+//         - mkdir -p src
+//         - mkdir -p amplify
+//         - ls src
+//         - ls amplify
+//         - "[[ -e src ]] && cp -r src amplify"
+//     build:
+//       commands:
+//         - amplifyPush --simple
+//     postBuild:
+//       commands:
+//         - ls
+//         - ls amplify
+//         - ls src
+//         - pwd
+//         - mkdir -p src
+//         - mkdir -p amplify
+//         - mkdir -p react-client
+//         - cp -r src amplify
+//         - cp -r amplify/src react-client/src
+// frontend:
+//   phases:
+//     preBuild:
+//       commands:
+//         - cd react-client
+//         - yarn global add create-react-app
+//     build:
+//       commands:
+//         - yarn install
+//         - yarn build
+//   artifacts:
+//     baseDirectory: /react-client/build
+//     discardPaths: true
+//     files:
+//       - '**/*'
+//   cache:
+//     paths: []
+
+//       `
     }]))
     .then(([client, options]) =>
       client
@@ -92,10 +137,10 @@ const setup = ({stage, projectName}) =>
             .promise()
             .then(() => Promise.resolve({app: apps[0]}))
             .then(({app}) =>
-              client.createBranch({
-                ...removeProperties(["iamServiceRoleArn", "customRules", "platform", "name", "enableBranchAutoBuild"], options),
+              client.updateBranch({
+                ...removeProperties(["iamServiceRoleArn", "customRules", "platform", "name", "enableBranchAutoBuild", "buildSpec"], options),
                 appId: app.appId,
-                framework: 'react',
+                framework: 'Web-Amplify',
                 enableNotification: true,
                 branchName: stage,
                 stage: "PRODUCTION"
@@ -108,15 +153,14 @@ const setup = ({stage, projectName}) =>
             client
               .createApp({
                 ...options, 
-                oauthToken: 'STRING_VALUE',
                 repository: `https://git-codecommit.us-east-1.amazonaws.com/v1/repos/${projectName.toLowerCase()}-${stage}/`, /* required */
               })
               .promise()
               .then(({app}) =>
                 client.createBranch({
-                  ...removeProperties(["iamServiceRoleArn", "customRules", "platform", "name", "enableBranchAutoBuild"], options),
+                  ...removeProperties(["iamServiceRoleArn", "customRules", "platform", "name", "enableBranchAutoBuild", "buildSpec"], options),
                   appId: app.appId,
-                  framework: 'react',
+                  framework: 'Web-Amplify',
                   enableNotification: true,
                   branchName: stage,
                   stage: "PRODUCTION"
