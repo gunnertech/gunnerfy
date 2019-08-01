@@ -48,6 +48,12 @@ const backend = ({stage}) =>
 
 const web = ({stage}) =>
   fs.readFile(`./gunnerfy.json`, 'utf8')
+    .then(jsonString =>
+      Promise.resolve(shell.exec(`
+        git add .; git commit -am "deploying web front end"; git checkout ${stage}; git push
+      `))
+      .then(() => jsonString)
+    )   
     .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
     .then(({projectName}) => Promise.all([
       hostingSetup({stage, projectName}),
