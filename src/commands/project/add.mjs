@@ -9,7 +9,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 const awsConfig = ({stage, accountId, projectName}) => `
 
 [profile ${projectName.toLowerCase()}-${stage}developer]
-role_arn = arn:aws:iam::${accountId}:role/${projectName}-${stage}OrganizationAccountAccessRole
+role_arn = arn:aws:iam::${accountId}:role/OrganizationAccountAccessRole
 source_profile = default
 region = us-east-1
 
@@ -18,7 +18,7 @@ region = us-east-1
 const awsCredentials = ({stage, accountId, projectName}) => `
 
 [${projectName.toLowerCase()}-${stage}developer]
-role_arn = arn:aws:iam::${accountId}:role/${projectName}-${stage}OrganizationAccountAccessRole
+role_arn = arn:aws:iam::${accountId}:role/OrganizationAccountAccessRole
 source_profile = default
 region = us-east-1
 

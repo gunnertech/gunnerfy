@@ -290,7 +290,7 @@ const add = ({
     accountName: args.accountName || `${args.projectName}-${args.stage}`,
     accountAlias: (args.accountName || `${args.projectName}-${args.stage}`).toLowerCase().replace(/ /g, ""),
     groupName: (args.groupName || `${args.accountName || `${args.projectName}-${args.stage}`}Admins`),
-    roleName: `${(args.accountName || `${args.projectName}-${args.stage}`).replace(/ /,'')}OrganizationAccountAccessRole`
+    roleName: `OrganizationAccountAccessRole`
   }))
   .then(args => ({
     ...args,
