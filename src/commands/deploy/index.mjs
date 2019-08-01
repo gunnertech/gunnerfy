@@ -48,13 +48,7 @@ const backend = ({stage}) =>
 
 const web = ({stage}) =>
   fs.readFile(`./gunnerfy.json`, 'utf8')
-    .then(jsonString =>
-      Promise.resolve(shell.exec(`
-        git add .; git commit -am "deploying web front end"; git checkout ${stage}; git push
-      `))
-      .then(() => jsonString)
-    )   
-    .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
+    .then(jsonString => JSON.parse(jsonString))
     .then(({projectName}) => Promise.all([
       hostingSetup({stage, projectName}),
       Promise.resolve(
@@ -72,13 +66,27 @@ const web = ({stage}) =>
       client
         .listApps()
         .promise()
-        .then(({apps}) => Promise.resolve(apps[0].appId)  
-        .then(appId => 
+        .then(({apps}) => apps[0].appId)
+        .then(appId =>
           Promise.resolve(
             shell.exec(`
-              git push
-            `)
+              git add .; git commit -am "deploying web front end"; git checkout ${stage};
+            `).code
           )
+            .then(code =>
+              client
+                .listJobs({appId, branchName: stage})
+                .promise()
+                .then(({jobSummaries}) => (
+                  !!jobSummaries.find(js => ["PENDING", "PROVISIONING", "RUNNING", "CANCELLING"].includes(js.status)) ? (
+                    console.log("There's already a job in progress")
+                  ) : (
+                    client
+                      .startJob({appId, branchName: stage, jobType: "RELEASE"})
+                      .promise()
+                  )
+                ))
+            )
           .then(() => sleep(5000))
           .then(() =>
             client
@@ -86,11 +94,10 @@ const web = ({stage}) =>
               .promise()
           )
         )
-      )
     )
-    .then(({jobSummaries}) => Promise.resolve(
+    .then(({jobSummaries}) =>
       console.log((jobSummaries||[])[0])
-    ))
+    )
     
 
 const mobile = ({stage}) =>
