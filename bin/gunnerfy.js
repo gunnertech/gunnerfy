@@ -137,14 +137,16 @@ program
           .then(json => addEnvironment({...args, projectName, ...json}) )
           .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
           .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
-          .then(() => setupServerless({projectName: projectName, stage: args.stage}))
-          .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
+          // .then(() => setupServerless({projectName: projectName, stage: args.stage}))
+          // .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
+          //${process.env.NVM_BIN}/amplify env pull &&
           .then(code => Promise.resolve(shell.exec(`
-            cd ${projectHome(projectName)}/react-native-client && 
-            npm install &&
-            rm -rf package.json &&
-            cp app.json package.json &&
-            echo "module.exports = {ENV: require('path').basename(__filename).split('.')[0]}" > ${args.stage}.config.js
+            cd ${projectHome(projectName)} && 
+            ${process.env.NVM_BIN}/amplify env checkout ${args.stage} &&
+            ${process.env.NVM_BIN}/amplify env pull
+          `).code))
+          .then(code => Promise.resolve(shell.exec(`
+            cd ${projectHome(projectName)}/react-native-client && npm install
           `).code))
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)}/react-client && npm install
@@ -161,7 +163,7 @@ program
         console.log("") ||
         console.log("") ||
         console.log(chalk.green(`To congifure this project with your own environment, run:`)) ||
-        console.log(chalk.green(`$ gunnerfy new ${projectName} -e <email> -o ${JSON.parse(fs.readFileSync(`${projectHome(projectName)}/gunnerfy.json`, 'utf8')).organizationalUnitName}`)) ||
+        console.log(chalk.green(`$ gunnerfy new ${projectName} -o ${JSON.parse(fs.readFileSync(`${projectHome(projectName)}/gunnerfy.json`, 'utf8')).organizationalUnitName}`)) ||
         console.log("") ||
         console.log("") ||
         console.log("") ||

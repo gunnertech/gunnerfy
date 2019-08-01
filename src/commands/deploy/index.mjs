@@ -50,6 +50,11 @@ const web = ({stage}) =>
   fs.readFile(`./gunnerfy.json`, 'utf8')
     .then(jsonString => JSON.parse(jsonString))
     .then(({projectName}) => Promise.all([
+      Promise.resolve(
+        shell.exec(`
+          git checkout ${stage}; git add .; git commit -am "deploying web front end";
+        `).code
+      ),
       hostingSetup({stage, projectName}),
       Promise.resolve(
         new AWS.Amplify({
@@ -62,31 +67,24 @@ const web = ({stage}) =>
         })
       )
     ]))
-    .then(([_, client]) =>
+    .then(([_, p, client]) =>
       client
         .listApps()
         .promise()
         .then(({apps}) => apps[0].appId)
         .then(appId =>
-          Promise.resolve(
-            shell.exec(`
-              git add .; git commit -am "deploying web front end"; git checkout ${stage};
-            `).code
-          )
-            .then(code =>
-              client
-                .listJobs({appId, branchName: stage})
-                .promise()
-                .then(({jobSummaries}) => (
-                  !!jobSummaries.find(js => ["PENDING", "PROVISIONING", "RUNNING", "CANCELLING"].includes(js.status)) ? (
-                    console.log("There's already a job in progress")
-                  ) : (
-                    client
-                      .startJob({appId, branchName: stage, jobType: "RELEASE"})
-                      .promise()
-                  )
-                ))
-            )
+          client
+            .listJobs({appId, branchName: stage})
+            .promise()
+            .then(({jobSummaries}) => (
+              !!jobSummaries.find(js => ["PENDING", "PROVISIONING", "RUNNING", "CANCELLING"].includes(js.status)) ? (
+                console.log("There's already a job in progress")
+              ) : (
+                client
+                  .startJob({appId, branchName: stage, jobType: "RELEASE"})
+                  .promise()
+              )
+            ))
           .then(() => sleep(5000))
           .then(() =>
             client

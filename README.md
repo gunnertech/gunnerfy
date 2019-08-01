@@ -24,7 +24,7 @@ $ npm install git+ssh://git@github.com/gunnertech/gunnerfy.git -g
 
 ## Platform
 ````
-$ gunnerfy new <project-name> -e <email> -o <organization-name>
+$ gunnerfy new <project-name> -o <organization-name>
 ````
 
 ### Examples
@@ -81,9 +81,9 @@ $ amplify api add-graphql-datasource
 $ gunnerfy users add -u <user-name> -s <base-stage>
 ````
 
-2. The approve will give the team lead a command to send to the new developer for them to run like this:
+2. The app will print the team lead a command to send to the new developer for them to run like this:
 ````
-$ gunnerfy add-project <project-name> -a <accountId> -s <baseStage>
+$ gunnerfy add-project <project-name> -s <baseStage>
 ````
 
 

@@ -37,7 +37,7 @@ cd ${projectHome(projectName)} && git checkout ${stage} && ${process.env.NVM_BIN
 --yes    
 `)
   .then(cmd => Promise.resolve(shell.exec(cmd).code))
-  .then(code => code === 0 ? Promise.resolve(code) : Promise.reject("amplify init failed"))
+  // .then(code => code === 0 ? Promise.resolve(code) : Promise.reject("amplify init failed"))
 
 
 export default init
