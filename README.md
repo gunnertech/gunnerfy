@@ -210,4 +210,6 @@ See [gunnerfy.js](https://github.com/gunnertech/gunnerfy/blob/master/bin/gunnerf
 
 ## TODOs
 
-Please see the issues section on Github for a list of development and documentation items
+Please see the issues section on Github for a list of development and documentation items.
+
+If you have an issue or question, please feel free to open a new issue.
