@@ -6,6 +6,8 @@ If you are not familiar with the above technology stack, Gunnerfy is not for you
 
 Setup is based off of [this starter template](https://github.com/gunnertech/aws-severless-react-template)
 
+Please [check out our usage videos](https://www.youtube.com/watch?v=Vz0G3Lq3DdQ&list=PLQBYTfA46mzj4dYTB73J5QxZXu9MF5ZHy)
+
 # Setup
 
 ## Prerequisites
