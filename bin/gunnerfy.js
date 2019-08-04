@@ -63,9 +63,9 @@ program
 
 program
   .command('migrate')
-  .description("Runs all migrations")
+  .description("Runs all database migrations - must be run from root of project folder")
   .option('-s, --stage [stage]', 'Stage - if omitted, default stage is used')
-  .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
+  .option('-r, --region [region]', 'AWS Region where platform is hosted', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .action((type, args) => 
     defaultStage({profile: args.sourceProfile, region: args.region})
@@ -100,9 +100,9 @@ program
 program
   .command('add-project <projectName>')
   .description("Adds an existing project for a user")
-  .option('-s, --stage <stage>', 'Name of stage to create.')
+  .option('-s, --stage <stage>', 'Name of stage to clone (must have access to this stage).')
   .option('-a, --account-id [accountId]', 'The AWS account id for the base stage. If omitted, gunnerfy will try to find the account by its name.')
-  .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
+  .option('-r, --region [region]', 'AWS Region in which the project is hosted', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .action((projectName, args) => 
     defaultStage({profile: args.sourceProfile, region: args.region})
@@ -177,11 +177,11 @@ program
 
 program
   .command('users <type>')
-  .description("Adds a user to a group, so they can access that stage")
+  .description("Adds a user to a group, so they can access that stage. <type> will always be 'add' for now.")
   .option('-u, --user-name <userName>', 'The AWS username to add to the group')
   .option('-s, --stage <stage>', 'The stage you are giving the user access to')
   .option('-p, --profile <profile>', 'The profile associated with the main AWS account.', 'default')
-  .option('-n, --project-name [projectName]', 'The name of the project. If not provided, will use the name in gunnerfy.json.')
+  .option('-n, --project-name [projectName]', 'Required if not run from the root of the project directory - The name of the project. If not provided, will use the name in gunnerfy.json.')
   .action((type, args) => 
     Promise.resolve("Adding user to group")
       .then(() => addUser({
@@ -201,7 +201,7 @@ program
 
 program
   .command('generate <type>')
-  .description("Generates an RDS migration file to be run with the migrate command")
+  .description("Generates an RDS migration file to be run with the migrate command - must be run from root of project folder")
   .option('-n, --name <name>', 'The name of the migration')
   .option('-s, --sql <sql>', 'SQL Statement to run')
   .action((type, args) => 
@@ -221,9 +221,9 @@ program
 
 program
   .command('deploy <type>')
-  .description("Deploys <type> where type is mobile, web or backend")
+  .description("Deploys <type> where type is mobile, web or backend - must be run from root of project folder")
   .option('-s, --stage [stage]', 'Name of stage to deploy. Uses default stage if none is passed')
-  .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
+  .option('-r, --region [region]', 'AWS Region in the project is hosted', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .action((type, args) =>
     defaultStage({profile: args.sourceProfile, region: args.region})
@@ -268,9 +268,10 @@ program
 
 program
   .command('git-approve') 
+  .description("Must be run from root of project folder. Approves a pull request.")
   .option('-i, --request-id <requestId>', 'The pull request id')
   .option('-s, --stage [stage]', 'Name of stage you are submitting for approval. If omitted, will user default stage')
-  .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
+  .option('-r, --region [region]', 'AWS Region in the project is hosted', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .action(args =>
     defaultStage({profile: args.sourceProfile, region: args.region})
@@ -292,6 +293,7 @@ program
 
 program
   .command('git-tag') 
+  .description("Must be run from root of project folder. Tags your branch for review.")
   .option('-i, --iteration-end-date <iterationEndDate>', 'The date the iteration ends in YYYYMMDD format')
   .option('-s, --stage [stage]', 'Name of stage you are submitting for approval. If omitted, will user default stage')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
@@ -316,6 +318,8 @@ program
 
 program
   .command('git-submit') 
+  .description("Must be run from root of project folder. Submits your branch for review.")
+  .option('-r, --region [region]', 'AWS Region in the project is hosted', 'us-east-1')
   .option('-t, --target-stage <targetStage>', 'Name of stage where code will be merged into, i.e. staging')
   .option('-i, --iteration-end-date <iterationEndDate>', 'The date the iteration ends in YYYYMMDD format')
   .option('-s, --stage [stage]', 'Name of stage you are submitting for approval. If omitted, will user default stage')
@@ -341,7 +345,7 @@ program
 
 program
   .command('develop')
-  .description("Runs watch to allow development locally")
+  .description("Must be run from root of project folder. Copies and watches required config files from amplify directory required to run development locally")
   .action(() =>
     Promise.resolve(execSync(`
       ${process.env.NVM_BIN}/watch 'rm -rf ${projectHome()}/react-client/src/aws-exports.js && cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-client/src/aws-exports.js &&  rm -rf ${projectHome()}/react-client/src/graphql && cp -R  ${projectHome()}/amplify/src/graphql ${projectHome()}/react-client/src && rm -rf ${projectHome()}/react-native-client/aws-exports.js && cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-native-client/aws-exports.js &&  rm -rf ${projectHome()}/react-native-client/src/graphql && cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/react-native-client/src' ${projectHome()}/amplify
@@ -359,6 +363,7 @@ program
 
 program 
   .command('rds-setup [projectName]')
+  .description("Adds an RDS cluster to the project")
   .option('-s, --stage [stage]', 'Name of stage to create. If omitted, will user default stage')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
   .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
@@ -481,7 +486,7 @@ program
 
 program
   .command('set-var')
-  .description("Adds an existing project for a user")
+  .description("Used internally.")
   .option('-n, --name <name>', 'The name of the variable')
   .option('-v, --value <value>', 'The value')
   .action(args =>

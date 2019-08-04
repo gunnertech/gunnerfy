@@ -198,6 +198,10 @@ If you want to delete an account, simply close the account.
 
 However, you should also remove the IAM Group and IAM Policy in the main account as well
 
+## Commands
+
+Below is a full list of commands. Run ``$ gunnerfy <command> --help`` for more information
+
 ## Troubleshooting
 
 1. [Git 403 error](https://docs.aws.amazon.com/codecommit/latest/userguide/troubleshooting-ch.html)
