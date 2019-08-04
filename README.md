@@ -1,6 +1,10 @@
 # Description
 
-A toolkit to assist in setup and operations of a serverless platform for a multi-developer team, leveraging AWS best practices, the Serverless Framework, AWS Amplify, AWS AppSync, GraphQL, React and Expo.
+Gunnerfy is a set of convenience commands that wrap the AWS (CLI, AppSync and Amplify), Serverless Framework, React and Expo and assist in the setup and workflow of a serverless platform in a multi-developer team, leveraging AWS best practices.
+
+If you are not familiar with the above technology stack, Gunnerfy is not for you.
+
+Setup is based off of [this starter template](https://github.com/gunnertech/aws-severless-react-template)
 
 # Setup
 
@@ -22,7 +26,7 @@ $ nvm use 12
 $ npm install git+ssh://git@github.com/gunnertech/gunnerfy.git -g
 ````
 
-## Platform
+## Create a new Platform
 ````
 $ gunnerfy new <project-name> -o <organization-name>
 ````
@@ -63,16 +67,6 @@ When you create the project in sentry, make sure you use the exact ``<project-na
 
 
 
-
-# RDS Schema Migrations and Codegen
-````
-$ cd <project-name>
-$ gunnerfy generate migration -n <migration-name> -s <sql-statement>
-$ gunnerfy migrate
-$ amplify env checkout <stage>
-$ amplify api add-graphql-datasource
-````
-
 # Adding a Team Member
 1. Dev requests access to ``<base-stage>`` from team lead (where pull requests are submitted, i.e. staging) with their IAM ``<user-name>``
 1. If approved, team lead will add dev's IAM user to the IAM group with access to base-stage
@@ -86,7 +80,17 @@ $ gunnerfy users add -u <user-name> -s <base-stage>
 $ gunnerfy add-project <project-name> -s <baseStage>
 ````
 
+# RDS Schema Migrations and Codegen (optional)
 
+While DynamoDB is the default data store, Gunnerfy also allows teams to build a serverless datastore using MySQL on RDS.
+
+````
+$ cd <project-name>
+$ gunnerfy generate migration -n <migration-name> -s <sql-statement>
+$ gunnerfy migrate
+$ amplify env checkout <stage>
+$ amplify api add-graphql-datasource
+````
 
 # Workflow
 
@@ -114,7 +118,7 @@ $ STAGE=<stage> npm run <simulator> (ios|android)
 
 ## Start of iteration
 ````
-$ git checkout <base-stage (staging|prod)>; git pull; # this makes sure you have the latest code and hotfixes
+$ git checkout <base-stage (staging|prodution>; git pull; # this makes sure you have the latest code and hotfixes
 $ git checkout <stage>; git merge <base-stage>
 $ amplify env checkout <stage>
 ````
@@ -197,3 +201,7 @@ However, you should also remove the IAM Group and IAM Policy in the main account
 ## Troubleshooting
 
 1. [Git 403 error](https://docs.aws.amazon.com/codecommit/latest/userguide/troubleshooting-ch.html)
+
+## TODOs
+
+Please see the issues section on Github for a list of development and documentation items
