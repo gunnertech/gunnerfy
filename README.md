@@ -202,7 +202,7 @@ However, you should also remove the IAM Group and IAM Policy in the main account
 
 ## Commands
 
-Below is a full list of commands. Run ``$ gunnerfy <command> --help`` for more information
+See [gunnerfy.js](https://github.com/gunnertech/gunnerfy/blob/master/bin/gunnerfy.js) for full list of commands. Run ``$ gunnerfy <command> --help`` for more information
 
 ## Troubleshooting
 
