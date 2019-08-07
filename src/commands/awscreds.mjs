@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk'
 import fs from 'fs-extra';
-
+import shell from 'shelljs'
 
 // new AWS.SharedIniFileCredentials({
 //   profile: `${projectName.toLowerCase()}-${stage}developer`,
