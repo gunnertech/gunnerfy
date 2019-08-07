@@ -25,7 +25,7 @@ Install the following
 ## Installation
 ````
 $ nvm use 12
-$ npm install git+ssh://git@github.com/gunnertech/gunnerfy.git -g
+$ npm install gunnerfy -g
 ````
 
 ## Create a new Platform
