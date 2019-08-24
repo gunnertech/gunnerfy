@@ -207,6 +207,7 @@ See [gunnerfy.js](https://github.com/gunnertech/gunnerfy/blob/master/bin/gunnerf
 ## Troubleshooting
 
 1. [Git 403 error](https://docs.aws.amazon.com/codecommit/latest/userguide/troubleshooting-ch.html)
+2. [error: uncaughtException: The security token included in the request is expired](https://github.com/aws-amplify/amplify-cli/issues/1980)
 
 ## TODOs
 
