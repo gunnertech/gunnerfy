@@ -360,7 +360,7 @@ program
         rm -rf ${projectHome()}/servereless/aws-exports.js && 
         cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/servereless/aws-exports.js &&  
         rm -rf ${projectHome()}/servereless/src/graphql && 
-        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/servereless/src`
+        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/servereless/src
         `,
         `${projectHome()}/amplify`
       ]
