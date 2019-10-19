@@ -357,10 +357,10 @@ program
         cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-native-client/aws-exports.js &&  
         rm -rf ${projectHome()}/react-native-client/src/graphql && 
         cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/react-native-client/src
-        rm -rf ${projectHome()}/servereless/aws-exports.js && 
-        cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/servereless/aws-exports.js &&  
-        rm -rf ${projectHome()}/servereless/src/graphql && 
-        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/servereless/src
+        rm -rf ${projectHome()}/serverless/aws-exports.js && 
+        cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/serverless/aws-exports.js &&  
+        rm -rf ${projectHome()}/serverless/src/graphql && 
+        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/serverless/src
         `,
         `${projectHome()}/amplify`
       ]
