@@ -59,7 +59,7 @@ const defaultStage = ({profile='default', region='us-east-1'}) =>
     ))
 
 program
-  .version('0.0.1')
+  .version('1.3.6')
 
 program
   .command('migrate')
