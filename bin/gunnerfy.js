@@ -59,7 +59,7 @@ const defaultStage = ({profile='default', region='us-east-1'}) =>
     ))
 
 program
-  .version('1.3.6')
+  .version('1.3.7')
 
 program
   .command('migrate')
@@ -139,11 +139,11 @@ program
           .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
           // .then(() => setupServerless({projectName: projectName, stage: args.stage}))
           // .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
-          //${process.env.NVM_BIN}/amplify env pull &&
+          //amplify env pull &&
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)} && 
-            ${process.env.NVM_BIN}/amplify env checkout ${args.stage} &&
-            ${process.env.NVM_BIN}/amplify env pull
+            amplify env checkout ${args.stage} &&
+            amplify env pull
           `).code))
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)}/react-native-client && 
@@ -244,7 +244,7 @@ program
           // ))
           .then(() => Promise.resolve(
             shell.exec(`
-              ${process.env.NVM_BIN}/amplify env checkout ${args.stage}
+              amplify env checkout ${args.stage}
             `)   
           ))
           .then(() =>
@@ -348,7 +348,7 @@ program
   .description("Runs watch to allow development locally")
   .action(() => {
     const child = spawn(
-      `${process.env.NVM_BIN}/watch`, [
+      `watch`, [
         `rm -rf ${projectHome()}/react-client/src/aws-exports.js && 
         cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-client/src/aws-exports.js && 
         rm -rf ${projectHome()}/react-client/src/graphql && 

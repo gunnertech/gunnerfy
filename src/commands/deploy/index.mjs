@@ -23,7 +23,7 @@ const backend = ({stage}) =>
         .then(() => Promise.resolve(
           shell.exec(`
             cd serverless &&
-            ${process.env.NVM_BIN}/serverless deploy -s ${stage}
+            serverless deploy -s ${stage}
           `)   
         ))
         .then(() => amplifyDeploy({projectName}))
@@ -41,7 +41,7 @@ const backend = ({stage}) =>
     )
     .then(() => Promise.resolve(
       shell.exec(`
-        echo $(${process.env.NVM_BIN}/serverless deploy list -s ${stage})
+        echo $(serverless deploy list -s ${stage})
       `)
     ))
   
@@ -107,19 +107,19 @@ const mobile = ({stage}) =>
       shell.exec(`
         cd react-native-project &&
         echo "Starting. Are you sure you updated the build/version numbers?\\n\\n\\n" &&
-        ${process.env.NVM_BIN}/expo build:ios --release-channel ${stage} &&
-        ${process.env.NVM_BIN}/expo build:android --release-channel ${stage} &&
+        expo build:ios --release-channel ${stage} &&
+        expo build:android --release-channel ${stage} &&
         echo "\\n\\n\\nThe builds have finished, but you still need to download them and publish them to the respective app stores"
       `)
     ) : (
       shell.exec(`
-        ${process.env.NVM_BIN}/expo publish --release-channel ${stage}
+        expo publish --release-channel ${stage}
       `)
     )   
   ))
   .then(() => Promise.resolve(
     shell.exec(`
-      ${process.env.NVM_BIN}/expo publish:history --release-channel ${stage}
+      expo publish:history --release-channel ${stage}
     `)
   ))
 

@@ -14,10 +14,10 @@ const setup = ({stage, projectName}) =>
         ''
       ) : (
         execSync(` 
-          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add api || true) && \\
-          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add auth || true) && \\
-          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add analytics || true) && \\
-          (cd ${projectHome(projectName)} && ${process.env.NVM_BIN}/amplify add storage || true)
+          (cd ${projectHome(projectName)} && amplify add api || true) && \\
+          (cd ${projectHome(projectName)} && amplify add auth || true) && \\
+          (cd ${projectHome(projectName)} && amplify add analytics || true) && \\
+          (cd ${projectHome(projectName)} && amplify add storage || true)
         `, {stdio: ['inherit','inherit','inherit']})
       )
     ))

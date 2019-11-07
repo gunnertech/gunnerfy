@@ -1,0 +1,9 @@
+"amplify": "./node_modules/.bin/amplify",
+    "serverless": "./node_modules/.bin/serverless",
+    "expo": "./node_modules/.bin/expo",
+
+
+    "@aws-amplify/cli": "latest",
+    "expo-cli": "latest",
+    "aws-sdk": "latest",
+        "serverless": "latest",

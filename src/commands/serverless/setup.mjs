@@ -16,7 +16,7 @@ const setup = ({stage, projectName}) =>
       cd ${projectHome(projectName)}/serverless && npm install
     `).code))
     .then(code => Promise.resolve(shell.exec(`
-      cd ${projectHome(projectName)}/serverless && ${process.env.NVM_BIN}/serverless deploy -s ${stage}
+      cd ${projectHome(projectName)}/serverless && serverless deploy -s ${stage}
     `).code))
     .then(() => 
       awscreds({stage, projectName})

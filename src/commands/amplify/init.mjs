@@ -30,7 +30,7 @@ PROVIDERS="{\\
 \\"awscloudformation\\":$AWSCLOUDFORMATIONCONFIG\\
 }"
 
-cd ${projectHome(projectName)} && git checkout ${stage} && ${process.env.NVM_BIN}/amplify init \\
+cd ${projectHome(projectName)} && git checkout ${stage} && amplify init \\
 --amplify $AMPLIFY \\
 --frontend $FRONTEND \\
 --providers $PROVIDERS \\
