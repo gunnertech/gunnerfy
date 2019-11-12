@@ -352,15 +352,21 @@ program
         `rm -rf ${projectHome()}/react-client/src/aws-exports.js && 
         cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-client/src/aws-exports.js && 
         rm -rf ${projectHome()}/react-client/src/graphql && 
+        rm -rf ${projectHome()}/react-client/src/api && 
         cp -R  ${projectHome()}/amplify/src/graphql ${projectHome()}/react-client/src && 
+        cp -R ${projectHome()}/amplify/src/api ${projectHome()}/react-client/src
         rm -rf ${projectHome()}/react-native-client/aws-exports.js && 
         cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/react-native-client/aws-exports.js &&  
         rm -rf ${projectHome()}/react-native-client/src/graphql && 
-        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/react-native-client/src
+        rm -rf ${projectHome()}/react-native-client/src/api && 
+        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/react-native-client/src &&
+        cp -R ${projectHome()}/amplify/src/api ${projectHome()}/react-native-client/src
         rm -rf ${projectHome()}/serverless/aws-exports.js && 
         cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/serverless/aws-exports.js &&  
         rm -rf ${projectHome()}/serverless/src/graphql && 
-        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/serverless/src
+        rm -rf ${projectHome()}/serverless/src/api && 
+        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/serverless/src &&
+        cp -R ${projectHome()}/amplify/src/api ${projectHome()}/serverless/src
         `,
         `${projectHome()}/amplify`
       ]
