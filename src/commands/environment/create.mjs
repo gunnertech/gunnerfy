@@ -1,11 +1,22 @@
 import AWS from 'aws-sdk'
 
 import {
+  createAccount,
+  sleep,
+  createAccountAlias,
   writeCredentialsToFile,
   addUserToGroup,
+  attachGroupPolicy,
+  createGroup,
+  createPolicy,
+  moveAccount,
+  findOrganizationalUnit,
+  createOrganizationalUnit,
+  getRootOrganizationalUnitId,
+  getRootAccountId
 } from "./index"
 
-const add = ({
+const create = ({
   stage,
   email,
   organizationalUnitName,
@@ -51,8 +62,40 @@ const add = ({
       region: 'us-east-1'
     })
   }))
+  .then(getRootAccountId)
+  .then(getRootOrganizationalUnitId)
+  .then(args =>
+    (!args.accountId ? (
+      createAccount(args)
+        .catch(err => console.log(err, err.stack) ||
+          getAllAccounts({profile: args.sourceProfile})
+            .then(accounts => Promise.resolve(
+              accounts.find(account => account.Name === args.accountName)
+            ))
+            .then(account => Promise.resolve({
+              ...args,
+              accountId: account.Id,
+              account: {
+                ...args.account,
+                accountId: account.Id
+              }
+            }))
+        )
+    ) : (
+      Promise.resolve(args)) 
+    ))
+  .then(findOrganizationalUnit)
+  .then(args => !args.organizationalUnitId ? createOrganizationalUnit(args) : Promise.resolve(args))
+  .then(moveAccount)
+  .then(createPolicy)
+  .then(createGroup)
+  .then(attachGroupPolicy)
   .then(addUserToGroup)
   .then(writeCredentialsToFile)
-  
+  .then(createAccountAlias)
+  .then(() => console.log("Sleep for 30 seconds....") || sleep(30000))
 
-export default add;
+
+
+
+export default create;

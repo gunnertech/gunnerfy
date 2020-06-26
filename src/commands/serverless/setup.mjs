@@ -10,13 +10,16 @@ import { projectHome } from '../util'
 const setup = ({stage, projectName}) =>
   Promise.resolve('Setting up Serverless')
 		.then(() => Promise.resolve(shell.exec(`
-			cd ${projectHome(projectName)} && git checkout ${stage};
+      cd ${projectHome(projectName)} && 
+      git checkout ${stage};
 		`).code))
 		.then(code => Promise.resolve(shell.exec(`
-      cd ${projectHome(projectName)}/serverless && npm install
+      cd ${projectHome(projectName)}/serverless && 
+      npm install
     `).code))
     .then(code => Promise.resolve(shell.exec(`
-      cd ${projectHome(projectName)}/serverless && serverless deploy -s ${stage}
+      cd ${projectHome(projectName)}/serverless && 
+      serverless deploy -s ${stage}
     `).code))
     .then(() => 
       awscreds({stage, projectName})
@@ -32,7 +35,9 @@ const setup = ({stage, projectName}) =>
         .then(domainName => setvar({projectName, name: `${stage}-cloudfront-domain`, value: domainName}))
     )
 		.then(code => Promise.resolve(shell.exec(`
-      cd ${projectHome(projectName)} && git add . && git commit -am "sets variables"
+      cd ${projectHome(projectName)} && 
+      git add . && 
+      git commit -am "sets variables"
 		`).code))
 
 

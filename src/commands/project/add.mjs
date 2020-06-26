@@ -1,5 +1,6 @@
 import shell from 'shelljs'
 import fs from 'fs-extra';
+import ini from 'ini';
 
 import { projectHome } from '../util'
 
@@ -55,7 +56,8 @@ const projectGitConfig = ({stage, accountId, projectName}) => `
 `
 
 const appendToFile = ({file, contents}) =>
-  fs.readFileSync(file).includes(contents) ? (
+  console.log(fs.readFileSync(file).toString()) ||
+  fs.readFileSync(file).toString().replace(/\W/g, "").includes(contents.replace(/\W/g, "")) ? (
     Promise.resolve(contents)
   ) : (
     fs.appendFile(file, contents, 'utf8')
@@ -68,7 +70,7 @@ const add = ({projectName, stage, accountId}) =>
     .then(() => appendToFile({file: `${process.env['HOME']}/.aws/config`, contents: awsConfig({stage, accountId, projectName})}))
     .then(() => appendToFile({file: `${process.env['HOME']}/.aws/credentials`, contents: awsCredentials({stage, accountId, projectName})}))
     .then(() => appendToFile({file: `${process.env['HOME']}/.gitconfig`, contents: gitConfig({stage, accountId, projectName})}))
-    .then(() => sleep(10000))
+    // .then(() => sleep(10000))
     .then(() => Promise.resolve(
       shell.exec(
         gitClone({stage, accountId, projectName})

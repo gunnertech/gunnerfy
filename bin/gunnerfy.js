@@ -11,12 +11,13 @@ import { execSync, spawn } from 'child_process';
 
 import setvar from '../src/commands/setvar';
 import addEnvironment from '../src/commands/environment/add';
+import createEnvironment from '../src/commands/environment/create';
 import getTemplate from '../src/commands/template/get';
 import configureEnvironment from '../src/commands/environment/configure';
 import setupAmplify from '../src/commands/amplify/setup'
 import setupGit from '../src/commands/git/setup'
 import setupServerless from '../src/commands/serverless/setup'
-import setupAmplifyHosting from '../src/commands/amplify/hosting/setup'
+// import setupAmplifyHosting from '../src/commands/amplify/hosting/setup'
 import setupRds from '../src/commands/rds/setup'
 import migrateRds from '../src/commands/rds/migrate'
 import addUser from '../src/commands/users/add'
@@ -100,16 +101,17 @@ program
 program
   .command('add-project <projectName>')
   .description("Adds an existing project for a user")
-  .option('-s, --stage <stage>', 'Name of stage to create.')
+  .option('-s, --stage <stage>', 'Name of stage to create.', 'staging')
   .option('-a, --account-id [accountId]', 'The AWS account id for the base stage. If omitted, gunnerfy will try to find the account by its name.')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
-  .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
+  .option('-p, --profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .action((projectName, args) => 
-    defaultStage({profile: args.sourceProfile, region: args.region})
-      .then(defaultStage => Promise.resolve({
-        ...args,
-        stage: args.stage || defaultStage
-      }))
+    // defaultStage({profile: args.sourceProfile, region: args.region})
+    //   .then(defaultStage => console.log("defaultStage", defaultStage) || Promise.resolve({
+    //     ...args,
+    //     stage: args.stage || defaultStage
+    //   }))
+    Promise.resolve(args)
       .then(args =>
         !!args.accountId ? (
           Promise.resolve(args)
@@ -130,16 +132,13 @@ program
       )
       .then(args =>
         Promise.resolve("Adding project")
-          .then(() => addProject({...args, projectName}))
-          .then(() => setupGit({projectName: projectName, stage: args.stage}) )
+          .then(() => addProject({...args, projectName})) //check
+          .then(() => setupGit({projectName: projectName, stage: args.stage}) ) // don't need
           .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
           .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
           .then(json => addEnvironment({...args, projectName, ...json}) )
           .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
           .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
-          // .then(() => setupServerless({projectName: projectName, stage: args.stage}))
-          // .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
-          //amplify env pull &&
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)} && 
             amplify env checkout ${args.stage} &&
@@ -147,16 +146,18 @@ program
           `).code))
           .then(code => Promise.resolve(shell.exec(`
             cd ${projectHome(projectName)}/react-native-client && 
-            npm install &&
-            rm -rf config.json &&
-            cp app.json config.json &&
-            echo "module.exports = {ENV: require('path').basename(__filename).split('.')[0]}" > ${args.stage}.config.js
+            npm install
           `).code))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${projectHome(projectName)}/react-client && npm install
+            cd ${projectHome(projectName)}/react-client && 
+            npm install
           `).code))
-          .then(() => args)
+          .then(code => Promise.resolve(shell.exec(`
+            cd ${projectHome(projectName)}/serverless && 
+            npm install
+          `).code))
           // .then(() => setupRds({projectName: projectName, stage: args.stage}))
+          .then(() => args)
       )
       .then(args => 
         console.log("") ||
@@ -344,7 +345,7 @@ program
   )
 
 program
-  .command('develop')
+  .command('develop') /// Deprecated
   .description("Runs watch to allow development locally")
   .action(() => {
     const child = spawn(
@@ -419,7 +420,7 @@ program
   .option('-s, --stage [stage]', 'Name of stage to create. If omitted, will user default stage')
   .option('-n, --account-name [accountName]', 'Name of account to find or create. If not passed, one will be geneated')
   .option('-r, --region [region]', 'AWS Region in which to create the new account', 'us-east-1')
-  .option('-f, --source-profile [sourceProfile]', 'Profile for your root account credentials', 'default')
+  .option('-p, --profile [sourceProfile]', 'Profile for your root account credentials', 'default')
   .option('-g, --group-name [groupName]', 'The name of the IAM group to find or create. If not passed, one will be generated automatically')
   .option('-a, --account-Id [accountId]', 'If passed will add the specified account to the organization and not create a new one.')
   .action((projectName, args) =>
@@ -451,20 +452,17 @@ program
           )
         )
         .then(args =>
-          addEnvironment({...args, projectName}) 
+          createEnvironment({...args, projectName}) 
             .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
             .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
             .then(() => setupServerless({projectName: projectName, stage: args.stage}))
-            .then(() => setupAmplifyHosting({projectName: projectName, stage: args.stage}))
             .then(code => Promise.resolve(shell.exec(`
-              cd ${projectHome(projectName)}/react-native-client && 
-              npm install &&
-              rm -rf config.json &&
-              cp app.json config.json &&
-              echo "module.exports = {ENV: require('path').basename(__filename).split('.')[0]}" > ${args.stage}.config.js
+              cd ${projectHome(projectName)}/react-client && 
+              npm install
             `).code))
             .then(code => Promise.resolve(shell.exec(`
-              cd ${projectHome(projectName)}/react-client && npm install
+              cd ${projectHome(projectName)}/react-native-client && 
+              npm install
             `).code))
             .then(() => setupRds({projectName: projectName, stage: args.stage}))
             .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
@@ -496,7 +494,7 @@ program
         process.exit(0)
       )
       .catch(err => 
-        console.log(err, err.stack) ||
+        console.log(chalk.red(err), chalk.red(err.stack)) ||
         process.exit(1)
       )
   )
