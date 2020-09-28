@@ -16,7 +16,7 @@ import getTemplate from '../src/commands/template/get';
 import configureEnvironment from '../src/commands/environment/configure';
 import setupAmplify from '../src/commands/amplify/setup'
 import setupGit from '../src/commands/git/setup'
-import setupServerless from '../src/commands/services/base/setup'
+import setupServerless from '../src/commands/serverless/setup'
 // import setupAmplifyHosting from '../src/commands/amplify/hosting/setup'
 import setupRds from '../src/commands/rds/setup'
 import migrateRds from '../src/commands/rds/migrate'
