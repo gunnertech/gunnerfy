@@ -44,13 +44,13 @@ const configure = ({stage, projectName}) =>
       stage, 
       projectName, 
       templateFile: `${projectHome(projectName)}/templates/secrets.yml.txt`,
-      targetFile: `${projectHome(projectName)}/serverless/secrets.yml`
+      targetFile: `${projectHome(projectName)}/services/base/secrets.yml`
     }))
     .then(() => grab({
       stage, 
       projectName, 
       templateFile: `${projectHome(projectName)}/templates/env.yml.txt`,
-      targetFile: `${projectHome(projectName)}/serverless/env.yml`
+      targetFile: `${projectHome(projectName)}/services/base/env.yml`
     }))
     .then(() => grab({
       stage, 

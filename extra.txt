@@ -1,5 +1,5 @@
 "amplify": "./node_modules/.bin/amplify",
-    "serverless": "./node_modules/.bin/serverless",
+    "serverless": "./node_modules/.bin/services/base",
     "expo": "./node_modules/.bin/expo",
 
 

@@ -86,13 +86,16 @@ const addUserToGroup = args =>
       args.iam.listGroupsForUser({MaxItems: 1000, UserName: User.UserName})
         .promise()
         .then(({Groups}) =>
-          console.log("You're in ", Groups.length, " groups") ||
-          Groups.length >= 10 ? Promise.reject(User.UserName + " already belongs to 10 groups") :
-          args.iam.addUserToGroup({
-            GroupName: args.groupName,
-            UserName: User.UserName,
-          })
-          .promise()
+          !!Groups.find(group => group.GroupName === args.groupName) ? (
+            null
+          ) : (
+            Groups.length >= 10 ? Promise.reject(User.UserName + " already belongs to 10 groups") :
+            args.iam.addUserToGroup({
+              GroupName: args.groupName,
+              UserName: User.UserName,
+            })
+            .promise()
+          )
         )
     )
     .then(() => Promise.resolve(args))

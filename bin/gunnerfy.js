@@ -16,7 +16,7 @@ import getTemplate from '../src/commands/template/get';
 import configureEnvironment from '../src/commands/environment/configure';
 import setupAmplify from '../src/commands/amplify/setup'
 import setupGit from '../src/commands/git/setup'
-import setupServerless from '../src/commands/serverless/setup'
+import setupServerless from '../src/commands/services/base/setup'
 // import setupAmplifyHosting from '../src/commands/amplify/hosting/setup'
 import setupRds from '../src/commands/rds/setup'
 import migrateRds from '../src/commands/rds/migrate'
@@ -153,7 +153,7 @@ program
             npm install
           `).code))
           .then(code => Promise.resolve(shell.exec(`
-            cd ${projectHome(projectName)}/serverless && 
+            cd ${projectHome(projectName)}/services/base && 
             npm install
           `).code))
           // .then(() => setupRds({projectName: projectName, stage: args.stage}))
@@ -210,9 +210,9 @@ program
   .option('-n, --name <name>', 'The name of the migration')
   .option('-s, --sql <sql>', 'SQL Statement to run')
   .action((type, args) => 
-    Promise.resolve(`Write ${args.sql} to ${projectHome()}/serverless/migrations/${new Date().getTime()}-${args.name}.sql`)
-      .then(() => Promise.resolve(shell.mkdir('-p', `${projectHome()}/serverless/migrations`)))
-      .then(() => fs.writeFile(`${projectHome()}/serverless/migrations/${new Date().getTime()}-${args.name}.sql`, args.sql, 'utf8'))
+    Promise.resolve(`Write ${args.sql} to ${projectHome()}/services/base/migrations/${new Date().getTime()}-${args.name}.sql`)
+      .then(() => Promise.resolve(shell.mkdir('-p', `${projectHome()}/services/base/migrations`)))
+      .then(() => fs.writeFile(`${projectHome()}/services/base/migrations/${new Date().getTime()}-${args.name}.sql`, args.sql, 'utf8'))
       .then(args => 
         console.log(args) ||
         console.log(chalk.green('All Finished!')) ||
@@ -362,12 +362,12 @@ program
         rm -rf ${projectHome()}/react-native-client/src/api && 
         cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/react-native-client/src &&
         cp -R ${projectHome()}/amplify/src/api ${projectHome()}/react-native-client/src
-        rm -rf ${projectHome()}/serverless/aws-exports.js && 
-        cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/serverless/aws-exports.js &&  
-        rm -rf ${projectHome()}/serverless/src/graphql && 
-        rm -rf ${projectHome()}/serverless/src/api && 
-        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/serverless/src &&
-        cp -R ${projectHome()}/amplify/src/api ${projectHome()}/serverless/src
+        rm -rf ${projectHome()}/services/base/aws-exports.js && 
+        cp ${projectHome()}/amplify/src/aws-exports.js ${projectHome()}/services/base/aws-exports.js &&  
+        rm -rf ${projectHome()}/services/base/src/graphql && 
+        rm -rf ${projectHome()}/services/base/src/api && 
+        cp -R ${projectHome()}/amplify/src/graphql ${projectHome()}/services/base/src &&
+        cp -R ${projectHome()}/amplify/src/api ${projectHome()}/services/base/src
         `,
         `${projectHome()}/amplify`
       ]

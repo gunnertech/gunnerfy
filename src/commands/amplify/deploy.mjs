@@ -24,8 +24,8 @@ cd ${projectHome(projectName)} && amplify push \\
     .then(() => shell.exec(`cd ${projectHome(projectName)} && amplify codegen statements`).code)
     .then(() => Promise.resolve(!fs.existsSync(`${projectHome(projectName)}/src/graphql`) ? "" : shell.exec(`
       rm -rf ${projectHome(projectName)}/amplify/src/graphql &&
-      rm -rf ${projectHome(projectName)}/serverless/aws-exports.js &&
-      cp ${projectHome(projectName)}/amplify/src/aws-exports.js ${projectHome(projectName)}/serverless/aws-exports.js &&  
+      rm -rf ${projectHome(projectName)}/services/base/aws-exports.js &&
+      cp ${projectHome(projectName)}/amplify/src/aws-exports.js ${projectHome(projectName)}/services/base/aws-exports.js &&  
       mv ${projectHome(projectName)}/src/graphql ${projectHome(projectName)}/amplify/src &&
       rm -rf ${projectHome(projectName)}/src
     `).code))

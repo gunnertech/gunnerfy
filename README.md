@@ -183,7 +183,7 @@ $ gunnerfy deploy web -s <stage>
 1. [Amplify Workflow](https://aws-amplify.github.io/docs/cli/multienv?sdk=js)
 1. [Amplify VSCode Extension](https://github.com/aws-amplify/amplify-js/wiki/VS-Code-Snippet-Extension#full-code-block-snippet-documentation)
 1. [Amplify with AppSync](https://aws-amplify.github.io/docs/js/api#aws-appsync-sdk)
-5. [Serverless Framework Docs](https://serverless.com/framework/docs/providers/aws/guide/quick-start/)
+5. [Serverless Framework Docs](https://services/base.com/framework/docs/providers/aws/guide/quick-start/)
 1. [AWS CloudFormation Docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html)
 1. [AppSync with Aurora](https://docs.aws.amazon.com/appsync/latest/devguide/tutorial-rds-resolvers.html#create-database-and-table)
 1. [Expo Docs](https://docs.expo.io/versions/latest/)

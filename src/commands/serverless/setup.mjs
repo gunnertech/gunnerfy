@@ -14,11 +14,11 @@ const setup = ({stage, projectName}) =>
       git checkout ${stage};
 		`).code))
 		.then(code => Promise.resolve(shell.exec(`
-      cd ${projectHome(projectName)}/serverless && 
+      cd ${projectHome(projectName)}/services/base && 
       npm install
     `).code))
     .then(code => Promise.resolve(shell.exec(`
-      cd ${projectHome(projectName)}/serverless && 
+      cd ${projectHome(projectName)}/services/base && 
       serverless deploy -s ${stage}
     `).code))
     .then(() => 

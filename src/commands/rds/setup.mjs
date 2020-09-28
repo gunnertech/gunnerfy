@@ -44,7 +44,7 @@ const setup = ({stage, projectName, force}) =>
     ))
     .then(answer =>
       answer === 'y' ? (
-        Promise.resolve(yaml.safeLoad(fs.readFileSync(`${projectHome(projectName)}/serverless/secrets.yml`, 'utf8')))
+        Promise.resolve(yaml.safeLoad(fs.readFileSync(`${projectHome(projectName)}/services/base/secrets.yml`, 'utf8')))
           .then(obj => new Promise((resolve, reject) => 
             rl.question('DB username (alpha-numeric maximum 16 characters): ', answer => resolve([obj, answer]))
           ))
@@ -59,10 +59,10 @@ const setup = ({stage, projectName, force}) =>
             }
           }))
           .then(obj => 
-            fs.writeFile(`${projectHome(projectName)}/serverless/secrets.yml`, yaml.safeDump(obj), 'utf8')
+            fs.writeFile(`${projectHome(projectName)}/services/base/secrets.yml`, yaml.safeDump(obj), 'utf8')
           )
-          .then(code => console.log(`cd ${projectHome(projectName)}/serverless && serverless deploy -s ${stage}`) || Promise.resolve(shell.exec(`
-            cd ${projectHome(projectName)}/serverless && serverless deploy -s ${stage}
+          .then(code => console.log(`cd ${projectHome(projectName)}/services/base && serverless deploy -s ${stage}`) || Promise.resolve(shell.exec(`
+            cd ${projectHome(projectName)}/services/base && serverless deploy -s ${stage}
           `).code))
           .then(() => 
             rds({projectName, stage})
