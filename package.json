@@ -1,6 +1,6 @@
 {
   "name": "gunnerfy",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Toolkit for Expo, React, Serverless Framework, AppSync and Amplify development",
   "main": "index.js",
   "scripts": {

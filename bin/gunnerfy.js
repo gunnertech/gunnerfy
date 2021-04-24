@@ -453,40 +453,40 @@ program
         )
         .then(args =>
           createEnvironment({...args, projectName}) 
-            .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
-            .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
-            .then(() => setupServerless({projectName: projectName, stage: args.stage}))
-            .then(code => Promise.resolve(shell.exec(`
-              cd ${projectHome(projectName)}/react-client && 
-              npm install
-            `).code))
-            .then(code => Promise.resolve(shell.exec(`
-              cd ${projectHome(projectName)}/react-native-client && 
-              npm install
-            `).code))
-            .then(() => setupRds({projectName: projectName, stage: args.stage}))
-            .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
-            .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
-            .then(json => 
-              fs.writeFile(
-                `${projectHome(projectName)}/gunnerfy.json`, 
-                JSON.stringify({
-                  ...json,
-                  projectName,
-                  region: args.region,
-                  email: args.email,
-                  organizationalUnitName: args.organizationalUnitName
-                }),
-                'utf8'
-              )
-            )
-            .then(() => Promise.resolve(shell.exec(`
-              cd ${projectHome(projectName)} && 
-              git add . && 
-              git commit -am "Initial commit" && 
-              git push ${args.stage} ${args.stage}
-            `)))
-        )
+        //     .then(() => configureEnvironment({projectName: projectName, stage: args.stage}))
+        //     .then(() => setupAmplify({projectName: projectName, stage: args.stage}))
+        //     .then(() => setupServerless({projectName: projectName, stage: args.stage}))
+        //     .then(code => Promise.resolve(shell.exec(`
+        //       cd ${projectHome(projectName)}/react-client && 
+        //       npm install
+        //     `).code))
+        //     .then(code => Promise.resolve(shell.exec(`
+        //       cd ${projectHome(projectName)}/react-native-client && 
+        //       npm install
+        //     `).code))
+        //     .then(() => setupRds({projectName: projectName, stage: args.stage}))
+        //     .then(() => fs.readFile(`${projectHome(projectName)}/gunnerfy.json`, 'utf8'))
+        //     .then(jsonString => Promise.resolve(JSON.parse(jsonString)))
+        //     .then(json => 
+        //       fs.writeFile(
+        //         `${projectHome(projectName)}/gunnerfy.json`, 
+        //         JSON.stringify({
+        //           ...json,
+        //           projectName,
+        //           region: args.region,
+        //           email: args.email,
+        //           organizationalUnitName: args.organizationalUnitName
+        //         }),
+        //         'utf8'
+        //       )
+        //     )
+        //     .then(() => Promise.resolve(shell.exec(`
+        //       cd ${projectHome(projectName)} && 
+        //       git add . && 
+        //       git commit -am "Initial commit" && 
+        //       git push ${args.stage} ${args.stage}
+        //     `)))
+        // )
       )
       .then(args => 
         console.log(args) ||
